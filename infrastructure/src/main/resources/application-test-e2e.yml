@@ -1,0 +1,7 @@
+mysql:
+  username: root
+  password: 123456
+  schema: adm_videos
+  url: 127.0.0.1:${mysql.port}
+
+
