@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.infrastructure.api
 
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryListResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CreateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest
@@ -68,7 +69,7 @@ interface CategoryAPI {
         @RequestParam(defaultValue = "10") perPage: Int,
         @RequestParam(defaultValue = "name") sort: String,
         @RequestParam(name = "dir", defaultValue = "asc") direction: String,
-    ): Pagination<*>
+    ): Pagination<CategoryListResponse>
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @Operation(summary = "Get category")

@@ -2,11 +2,11 @@ package com.fullcycle.admin.catalogo.domain.validation
 
 interface ValidationHandler {
 
-    fun append(aError: Error): ValidationHandler
+    fun validate(aError: Error): ValidationHandler
 
-    fun append(validationHandler: ValidationHandler): ValidationHandler
+    fun validate(validationHandler: ValidationHandler): ValidationHandler
 
-    fun append(validation: Validation): ValidationHandler
+     fun <T> validate(validation: Validation<T>): T?
 
     fun getErrors(): List<Error>?
 
@@ -18,8 +18,8 @@ interface ValidationHandler {
         return getErrors()?.firstOrNull()
     }
 
-    interface Validation {
-        fun validate()
+    fun interface Validation<T> {
+        fun validate(): T
     }
 
 }

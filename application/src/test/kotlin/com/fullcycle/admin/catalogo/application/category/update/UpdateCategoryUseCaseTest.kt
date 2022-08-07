@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.application.category.update
 
 import arrow.core.getOrElse
+import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
@@ -13,7 +14,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -21,17 +21,20 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.times
-import org.mockito.junit.jupiter.MockitoExtension
 import java.util.*
 
-@ExtendWith(MockitoExtension::class)
-class UpdateCategoryUseCaseTest {
+
+class UpdateCategoryUseCaseTest: UseCaseTest() {
 
     @InjectMocks
     lateinit var useCase: DefaultUpdateCategoryUseCase
 
     @Mock
     lateinit var categoryGateway: CategoryGateway
+
+    override fun getMocks(): List<Any> {
+        return listOf(categoryGateway)
+    }
 
     @BeforeEach
     fun cleanUp() {

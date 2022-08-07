@@ -1,28 +1,30 @@
 package com.fullcycle.admin.catalogo.application.category.retrieve.list
 
+import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
-import com.fullcycle.admin.catalogo.domain.category.CategorySeachQuery
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
-class ListCategoriesUseCaseTest {
+class ListCategoriesUseCaseTest: UseCaseTest() {
 
     @InjectMocks
     lateinit var useCase: DefaultListCategoriesUseCase
 
     @Mock
     lateinit var categoryGateway: CategoryGateway
+
+    override fun getMocks(): List<Any> {
+        return listOf(categoryGateway)
+    }
 
     @BeforeEach
     fun cleanUp() {
@@ -43,17 +45,17 @@ class ListCategoriesUseCaseTest {
         val expectedDirection = "asc"
 
 
-        val categorySeachQuery =
-            CategorySeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val seachQuery =
+            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, categories.size.toLong(), categories)
 
         val expectedItemsCount = 2
         val expectedResult = pagination.map(ListCategoriesOutput::from)
 
-        whenever(categoryGateway.findAll(eq(categorySeachQuery))).thenReturn(pagination)
+        whenever(categoryGateway.findAll(eq(seachQuery))).thenReturn(pagination)
 
-        val actualResult = useCase.execute(categorySeachQuery)
+        val actualResult = useCase.execute(seachQuery)
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items.size)
         Assertions.assertEquals(expectedResult, actualResult)
@@ -73,17 +75,17 @@ class ListCategoriesUseCaseTest {
         val expectedDirection = "asc"
 
 
-        val categorySeachQuery =
-            CategorySeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val seachQuery =
+            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, 0, categories)
 
         val expectedItemsCount = 0
         val expectedResult = pagination.map(ListCategoriesOutput::from)
 
-        whenever(categoryGateway.findAll(eq(categorySeachQuery))).thenReturn(pagination)
+        whenever(categoryGateway.findAll(eq(seachQuery))).thenReturn(pagination)
 
-        val actualResult = useCase.execute(categorySeachQuery)
+        val actualResult = useCase.execute(seachQuery)
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items.size)
         Assertions.assertEquals(expectedResult, actualResult)
@@ -101,13 +103,13 @@ class ListCategoriesUseCaseTest {
         val expectedDirection = "asc"
         val expectedErrorMessage = "Gateway exception"
 
-        val categorySeachQuery =
-            CategorySeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val seachQuery =
+            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
 
-        whenever(categoryGateway.findAll(eq(categorySeachQuery))).thenThrow(IllegalStateException(expectedErrorMessage))
+        whenever(categoryGateway.findAll(eq(seachQuery))).thenThrow(IllegalStateException(expectedErrorMessage))
 
-        val illegalStateException = Assertions.assertThrows(IllegalStateException::class.java) { useCase.execute(categorySeachQuery) }
+        val illegalStateException = Assertions.assertThrows(IllegalStateException::class.java) { useCase.execute(seachQuery) }
 
         Assertions.assertEquals(expectedErrorMessage, illegalStateException.message)
     }

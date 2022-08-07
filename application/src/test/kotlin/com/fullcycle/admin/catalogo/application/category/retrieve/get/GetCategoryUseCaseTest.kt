@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.application.category.retrieve.get
 
+import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
@@ -11,21 +12,22 @@ import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.times
-import org.mockito.junit.jupiter.MockitoExtension
 
-@ExtendWith(MockitoExtension::class)
-class GetCategoryUseCaseTest {
+class GetCategoryUseCaseTest: UseCaseTest() {
 
     @InjectMocks
     lateinit var useCase: DefaultGetCategoryByIdUseCase
 
     @Mock
     lateinit var categoryGateway: CategoryGateway
+
+    override fun getMocks(): List<Any> {
+        return listOf(categoryGateway)
+    }
 
     @BeforeEach
     fun cleanUp() {

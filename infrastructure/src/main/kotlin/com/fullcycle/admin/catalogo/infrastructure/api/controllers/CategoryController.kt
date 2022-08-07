@@ -7,9 +7,10 @@ import com.fullcycle.admin.catalogo.application.category.retrieve.get.GetCategor
 import com.fullcycle.admin.catalogo.application.category.retrieve.list.ListCategoriesUseCase
 import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryCommand
 import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryUseCase
-import com.fullcycle.admin.catalogo.domain.category.CategorySeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.infrastructure.api.CategoryAPI
+import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryListResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CreateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest
@@ -63,9 +64,9 @@ class CategoryController(
         perPage: Int,
         sort: String,
         direction: String
-    ): Pagination<*> {
-        val pagination = listCategoriesUseCase.execute(
-            CategorySeachQuery(
+    ): Pagination<CategoryListResponse> {
+        return listCategoriesUseCase.execute(
+            SeachQuery(
                 page = page,
                 perPage = perPage,
                 term = search,
@@ -73,8 +74,6 @@ class CategoryController(
                 direction = direction
             )
         ).map { CategoryApiPresenter.present(it) }
-
-        return pagination
     }
 
     override fun findById(id: String): CategoryResponse {

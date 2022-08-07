@@ -2,19 +2,20 @@ package com.fullcycle.admin.catalogo.infrastructure.category
 
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
-import com.fullcycle.admin.catalogo.domain.category.CategorySeachQuery
+import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.fullcycle.admin.catalogo.infrastructure.utils.SpecificationUtils
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import java.util.*
 import javax.transaction.Transactional
 
-@Service
+@Component
 class CategoryMySQLGateway(
     private val categoryRepository: CategoryRepository
 ): CategoryGateway {
@@ -42,8 +43,8 @@ class CategoryMySQLGateway(
         return saveAndFlush(aCategory)
     }
 
-    override fun findAll(aQuery: CategorySeachQuery): Pagination<Category> {
-        var page = PageRequest.of(
+    override fun findAll(aQuery: SeachQuery): Pagination<Category> {
+        val page = PageRequest.of(
             aQuery.page,
             aQuery.perPage,
             Sort.by(Sort.Direction.fromString(aQuery.direction), aQuery.sort)
@@ -64,6 +65,11 @@ class CategoryMySQLGateway(
             total = pageResult.totalElements,
             items = pageResult.content.map { it.toAggregate() }
         )
+    }
+
+    override fun existsById(categoryIds: Iterable<CategoryID>): List<CategoryID> {
+        val ids = categoryIds.map { it.value }
+        return categoryRepository.existsByIds(ids).map { CategoryID.from(it) }
     }
 
     private fun saveAndFlush(aCategory: Category): Category {

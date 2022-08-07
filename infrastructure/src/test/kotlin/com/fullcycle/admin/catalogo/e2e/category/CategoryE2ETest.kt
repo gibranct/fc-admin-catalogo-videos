@@ -1,9 +1,7 @@
-package com.fullcycle.admin.catalogo.e2e
+package com.fullcycle.admin.catalogo.e2e.category
 
-import com.fullcycle.admin.catalogo.domain.category.CategoryID
+import com.fullcycle.admin.catalogo.e2e.MockDsl
 import com.fullcycle.admin.catalogo.infrastructure.E2ETest
-import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryResponse
-import com.fullcycle.admin.catalogo.infrastructure.category.models.CreateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.fullcycle.admin.catalogo.infrastructure.configuration.json.Json
@@ -18,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -28,13 +25,17 @@ import org.testcontainers.junit.jupiter.Testcontainers
 
 @E2ETest
 @Testcontainers
-internal class CategoryE2ETest {
+internal class CategoryE2ETest: MockDsl {
 
     @Autowired
     lateinit var mockMvc: MockMvc
 
     @Autowired
     lateinit var categoryRepository: CategoryRepository
+
+    override fun mvc(): MockMvc {
+        return this.mockMvc
+    }
 
     companion object {
 
@@ -64,7 +65,7 @@ internal class CategoryE2ETest {
 
         val aCategoryId = givenACategory(expectedName, expectedDescription, expectedIsActive)
 
-        val categoryResponse = retrieveCategory(aCategoryId.value)
+        val categoryResponse = retrieveCategory(aCategoryId)
 
         Assertions.assertThat(categoryResponse.id).isEqualTo(aCategoryId.value)
         Assertions.assertThat(categoryResponse.name).isEqualTo(expectedName)
@@ -82,7 +83,7 @@ internal class CategoryE2ETest {
 
         val aCategoryId = givenACategory("any", null, false)
 
-        val categoryResponse = retrieveCategory(aCategoryId.value)
+        val categoryResponse = retrieveCategory(aCategoryId)
 
         Assertions.assertThat(categoryResponse.id).isEqualTo(aCategoryId.value)
         Assertions.assertThat(categoryResponse.name).isEqualTo("any")
@@ -97,7 +98,7 @@ internal class CategoryE2ETest {
 
         mockMvc.perform(request)
 
-        val newCategoryResponse = retrieveCategory(aCategoryId.value)
+        val newCategoryResponse = retrieveCategory(aCategoryId)
 
         Assertions.assertThat(newCategoryResponse.id).isEqualTo(aCategoryId.value)
         Assertions.assertThat(newCategoryResponse.name).isEqualTo(expectedName)
@@ -115,7 +116,7 @@ internal class CategoryE2ETest {
 
         val aCategoryId = givenACategory(expectedName, expectedDescription, expectedIsActive)
 
-        val categoryResponse = retrieveCategory(aCategoryId.value)
+        val categoryResponse = retrieveCategory(aCategoryId)
 
         Assertions.assertThat(categoryResponse.id).isEqualTo(aCategoryId.value)
         Assertions.assertThat(categoryResponse.name).isEqualTo(expectedName)
@@ -181,53 +182,5 @@ internal class CategoryE2ETest {
             .andExpect(jsonPath("$.per_page", Matchers.equalTo(1)))
             .andExpect(jsonPath("$.total", Matchers.equalTo(3)))
             .andExpect(jsonPath("$.items", Matchers.hasSize<Int>(0)))
-    }
-
-    private fun listCategories(page: Int, perPage: Int): ResultActions {
-        return listCategories(page, perPage, "", "", "")
-    }
-
-    private fun listCategories(
-        page: Int,
-        perPage: Int,
-        sort: String,
-        dir: String,
-        search: String
-    ): ResultActions {
-        val request = get("/categories")
-            .queryParam("page", page.toString())
-            .queryParam("perPage", perPage.toString())
-            .queryParam("sort", sort)
-            .queryParam("dir", dir)
-            .queryParam("search", search)
-
-        return mockMvc.perform(request)
-    }
-
-    private fun givenACategory(expectedName: String, expectedDescription: String?, expectedIsActive: Boolean): CategoryID {
-        val categoryRequest = CreateCategoryRequest(expectedName, expectedDescription, expectedIsActive)
-
-        val request = post("/categories")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(Json.writeValueAsString(categoryRequest))
-
-        val categoryId = this.mockMvc.perform(request)
-            .andExpect(status().isCreated)
-            .andReturn()
-            .response.getHeader("Location")
-            ?.replace("/categories/", "")
-
-        return CategoryID.from(categoryId!!)
-    }
-
-    private fun retrieveCategory(anId: String): CategoryResponse {
-        val request = get("/categories/$anId")
-
-        val json = mockMvc.perform(request)
-            .andExpect(status().isOk)
-            .andReturn()
-            .response.contentAsString
-
-        return Json.readValue(json, CategoryResponse::class.java)
     }
 }

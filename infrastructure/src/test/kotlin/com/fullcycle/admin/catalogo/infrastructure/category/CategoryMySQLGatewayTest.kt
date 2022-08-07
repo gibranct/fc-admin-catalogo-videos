@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalogo.infrastructure.category
 
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
-import com.fullcycle.admin.catalogo.domain.category.CategorySeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.fullcycle.admin.catalogo.infrastructure.MySQLGatewayTest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
@@ -33,7 +33,7 @@ internal class CategoryMySQLGatewayTest {
 
         assertThat(1).isEqualTo(categoryRepository.count())
 
-        assertThat(actualCategory).usingRecursiveComparison().isEqualTo(actualCategory)
+        assertThat(aCategory).usingRecursiveComparison().isEqualTo(actualCategory)
     }
 
     @Test
@@ -150,7 +150,7 @@ internal class CategoryMySQLGatewayTest {
 
         assertThat(categoryRepository.count()).isEqualTo(3)
 
-        val query = CategorySeachQuery(0, 1, "", "name", "asc")
+        val query = SeachQuery(0, 1, "", "name", "asc")
         val actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -168,7 +168,7 @@ internal class CategoryMySQLGatewayTest {
 
         assertThat(categoryRepository.count()).isEqualTo(0)
 
-        val query = CategorySeachQuery(0, 1, "doc", "name", "asc")
+        val query = SeachQuery(0, 1, "doc", "name", "asc")
         val actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -198,7 +198,7 @@ internal class CategoryMySQLGatewayTest {
         assertThat(categoryRepository.count()).isEqualTo(3)
 
         // Page 0
-        var query = CategorySeachQuery(0, 1, "", "name", "asc")
+        var query = SeachQuery(0, 1, "", "name", "asc")
         var actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -208,7 +208,7 @@ internal class CategoryMySQLGatewayTest {
 
         // Page 1
         expectedPage = 1
-        query = CategorySeachQuery(1, 1, "", "name", "asc")
+        query = SeachQuery(1, 1, "", "name", "asc")
         actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -218,7 +218,7 @@ internal class CategoryMySQLGatewayTest {
 
         // Page 2
         expectedPage = 2
-        query = CategorySeachQuery(2, 1, "", "name", "asc")
+        query = SeachQuery(2, 1, "", "name", "asc")
         actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -248,7 +248,7 @@ internal class CategoryMySQLGatewayTest {
 
         assertThat(categoryRepository.count()).isEqualTo(3)
 
-        val query = CategorySeachQuery(0, 1, "MOST", "name", "asc")
+        val query = SeachQuery(0, 1, "MOST", "name", "asc")
         val actualResult = categoryGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)

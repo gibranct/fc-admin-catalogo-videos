@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.application.category.create
 
 import arrow.core.getOrElse
+import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification
 import com.nhaarman.mockitokotlin2.any
@@ -9,24 +10,25 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.times
-import org.mockito.junit.jupiter.MockitoExtension
-import java.util.Objects
+import java.util.*
 
-@ExtendWith(MockitoExtension::class)
-class CreateCategoryUseCaseTest {
+class CreateCategoryUseCaseTest: UseCaseTest() {
 
     @InjectMocks
     lateinit var useCase: DefaultCreateCategoryUseCase
 
     @Mock
     lateinit var categoryGateway: CategoryGateway
+
+    override fun getMocks(): List<Any> {
+        return listOf(categoryGateway)
+    }
 
     @Test
     fun givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() {

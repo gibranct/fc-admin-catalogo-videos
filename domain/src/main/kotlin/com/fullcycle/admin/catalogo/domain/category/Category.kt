@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.category
 
 import com.fullcycle.admin.catalogo.domain.AggregateRoot
+import com.fullcycle.admin.catalogo.domain.utils.InstantUtils
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler
 import java.time.Instant
 
@@ -20,7 +21,7 @@ data class Category constructor(
             aDescription: String?,
             isActive: Boolean,
         ): Category {
-            val now  = Instant.now()
+            val now  = InstantUtils.now()
             val id = CategoryID.unique()
             val deletedAt = if (isActive) null else now
             return newCategory(id, aName, aDescription, isActive, now, now, deletedAt)
@@ -53,17 +54,17 @@ data class Category constructor(
 
     fun deactivate(): Category {
         if (this.deletedAt == null) {
-            this.deletedAt = Instant.now()
+            this.deletedAt = InstantUtils.now()
         }
         this.isActive = false
-        this.updatedAt = Instant.now()
+        this.updatedAt = InstantUtils.now()
         return this
     }
 
     fun activate(): Category {
         this.deletedAt = null
         this.isActive = true
-        this.updatedAt = Instant.now()
+        this.updatedAt = InstantUtils.now()
         return this
     }
 
@@ -72,7 +73,8 @@ data class Category constructor(
 
         this.name = aName
         this.description = aDescription
-        this.updatedAt = Instant.now()
+        this.updatedAt = InstantUtils.now()
+
         return this
     }
 

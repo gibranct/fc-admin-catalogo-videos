@@ -1,6 +1,6 @@
-package com.fullcycle.admin.catalogo.domain.category
+package com.fullcycle.admin.catalogo.domain.pagination
 
-data class CategorySeachQuery(
+data class SeachQuery(
     val page: Int,
     val perPage: Int,
     val term: String,

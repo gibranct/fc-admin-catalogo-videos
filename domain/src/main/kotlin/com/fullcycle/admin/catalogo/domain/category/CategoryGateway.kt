@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.domain.category
 
+import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 
 interface CategoryGateway {
@@ -12,6 +13,7 @@ interface CategoryGateway {
 
     fun update(category: Category): Category
 
-    fun findAll(aQuery: CategorySeachQuery): Pagination<Category>
+    fun findAll(aQuery: SeachQuery): Pagination<Category>
+    fun existsById(categoryIds: Iterable<CategoryID>): List<CategoryID>
 
 }

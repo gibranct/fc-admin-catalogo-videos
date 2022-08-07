@@ -44,7 +44,7 @@ internal class CategoryTest {
     fun givenANameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldReceiveAnError() {
         val expectedName = "fs "
         val expectedErrorMessage = "'name' must be between 3 and 255 characters"
-        val expectedErrorMessagesCount = 2
+        val expectedErrorMessagesCount = 1
         val expectedDescription = "new description"
         val expectedIsActive = true
 
