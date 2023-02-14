@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.genre
 
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 
 interface GenreGateway {
 
@@ -13,6 +13,6 @@ interface GenreGateway {
 
     fun update(genre: Genre): Genre
 
-    fun findAll(aQuery: SeachQuery): Pagination<Genre>
+    fun findAll(aQuery: SearchQuery): Pagination<Genre>
 
 }

@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalogo.domain.validation
 
 interface ValidationHandler {
 
-    fun validate(aError: Error): ValidationHandler
+    fun append(aError: Error): ValidationHandler
 
     fun validate(validationHandler: ValidationHandler): ValidationHandler
 

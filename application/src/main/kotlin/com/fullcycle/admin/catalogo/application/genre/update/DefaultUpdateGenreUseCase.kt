@@ -1,6 +1,5 @@
 package com.fullcycle.admin.catalogo.application.genre.update
 
-import arrow.core.Either
 import arrow.core.toOption
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
@@ -47,7 +46,7 @@ data class DefaultUpdateGenreUseCase(
             missingIds.removeAll(retrievedIds.toSet())
             val missingIdsMessage = missingIds.joinToString(",") { it.value }
 
-            notification.validate(Error("Some categories could not be found: $missingIdsMessage"))
+            notification.append(Error("Some categories could not be found: $missingIdsMessage"))
         }
 
         return notification

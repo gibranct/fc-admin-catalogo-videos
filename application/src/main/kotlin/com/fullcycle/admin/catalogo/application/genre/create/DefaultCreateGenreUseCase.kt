@@ -13,9 +13,9 @@ class DefaultCreateGenreUseCase(
     private val genreGateway: GenreGateway,
     private val categoryGateway: CategoryGateway
 ): CreateGenreUseCase() {
-    override fun execute(aCommand: CreateGenreCommand): CreateGenreOutput {
-        val (name, isActive) = aCommand
-        val categoryIds = aCommand.categoriesIds.map(this::toCategoryId)
+    override fun execute(anIn: CreateGenreCommand): CreateGenreOutput {
+        val (name, isActive) = anIn
+        val categoryIds = anIn.categoriesIds.map(this::toCategoryId)
 
         val notification = Notification.create()
         notification.validate(validateCategories(categoryIds))
@@ -42,7 +42,7 @@ class DefaultCreateGenreUseCase(
             missingIds.removeAll(retrievedIds.toSet())
             val missingIdsMessage = missingIds.joinToString(",") { it.value }
 
-            notification.validate(Error("Some categories could not be found: $missingIdsMessage"))
+            notification.append(Error("Some categories could not be found: $missingIdsMessage"))
         }
 
         return notification

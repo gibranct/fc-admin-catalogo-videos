@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.application.genre.retrieve.list
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -31,7 +31,7 @@ class ListGenresUseCaseTestIT {
         val expectedDirection = "asc"
 
         val searchQuery =
-            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+            SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, genres.size.toLong(), genres)
 
@@ -57,7 +57,7 @@ class ListGenresUseCaseTestIT {
         val expectedDirection = "asc"
 
         val searchQuery =
-            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+            SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, 0, listOf<Genre>())
 

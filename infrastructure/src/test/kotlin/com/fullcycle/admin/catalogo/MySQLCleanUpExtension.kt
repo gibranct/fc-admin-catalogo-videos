@@ -4,7 +4,6 @@ import com.fullcycle.admin.catalogo.infrastructure.category.persistence.Category
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 class MySQLCleanUpExtension: BeforeEachCallback {

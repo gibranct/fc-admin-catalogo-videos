@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.fullcycle.admin.catalogo.infrastructure.utils.SpecificationUtils
@@ -43,7 +43,7 @@ class CategoryMySQLGateway(
         return saveAndFlush(aCategory)
     }
 
-    override fun findAll(aQuery: SeachQuery): Pagination<Category> {
+    override fun findAll(aQuery: SearchQuery): Pagination<Category> {
         val page = PageRequest.of(
             aQuery.page,
             aQuery.perPage,

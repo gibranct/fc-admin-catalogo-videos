@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
@@ -38,7 +38,7 @@ class ListGenresUseCaseTest: UseCaseTest() {
         val expectedDirection = "asc"
 
         val searchQuery =
-            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+            SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, genres.size.toLong(), genres)
 
@@ -67,7 +67,7 @@ class ListGenresUseCaseTest: UseCaseTest() {
 
 
         val searchQuery =
-            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+            SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val pagination = Pagination(expectedPage, expectedPerPage, 0, listOf<Genre>())
 
@@ -94,13 +94,13 @@ class ListGenresUseCaseTest: UseCaseTest() {
         val expectedDirection = "asc"
         val expectedErrorMessage = "Gateway exception"
 
-        val seachQuery =
-            SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val searchQuery =
+            SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
 
-        whenever(genreGateway.findAll(eq(seachQuery))).thenThrow(IllegalStateException(expectedErrorMessage))
+        whenever(genreGateway.findAll(eq(searchQuery))).thenThrow(IllegalStateException(expectedErrorMessage))
 
-        val illegalStateException = Assertions.assertThrows(IllegalStateException::class.java) { useCase.execute(seachQuery) }
+        val illegalStateException = Assertions.assertThrows(IllegalStateException::class.java) { useCase.execute(searchQuery) }
 
         Assertions.assertEquals(expectedErrorMessage, illegalStateException.message)
     }

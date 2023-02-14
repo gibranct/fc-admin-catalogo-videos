@@ -14,7 +14,7 @@ class CategoryValidator(
 ): Validator(validationHandler) {
     override fun validate() {
         val name = category.name.trim()
-        if (name.isEmpty()) { validationHandler.validate(Error("'name' should not be null or empty")) }
-        if (name.length < NAME_MIN_LENGTH || name.length > NAME_MAX_LENGTH) { validationHandler.validate(Error("'name' must be between 3 and 255 characters")) }
+        if (name.isEmpty()) { validationHandler.append(Error("'name' should not be null or empty")) }
+        if (name.length < NAME_MIN_LENGTH || name.length > NAME_MAX_LENGTH) { validationHandler.append(Error("'name' must be between 3 and 255 characters")) }
     }
 }

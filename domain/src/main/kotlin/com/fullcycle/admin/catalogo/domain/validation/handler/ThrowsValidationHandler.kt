@@ -5,7 +5,7 @@ import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler
 
 class ThrowsValidationHandler: ValidationHandler {
-    override fun validate(aError: Error): ValidationHandler {
+    override fun append(aError: Error): ValidationHandler {
         throw DomainException.with(aError)
     }
 

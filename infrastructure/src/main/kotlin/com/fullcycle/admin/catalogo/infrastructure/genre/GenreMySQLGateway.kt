@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.infrastructure.genre
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import com.fullcycle.admin.catalogo.infrastructure.utils.SpecificationUtils
@@ -39,7 +39,7 @@ class GenreMySQLGateway(
         return saveAndFlush(genre)
     }
 
-    override fun findAll(aQuery: SeachQuery): Pagination<Genre> {
+    override fun findAll(aQuery: SearchQuery): Pagination<Genre> {
         val page = PageRequest.of(
             aQuery.page,
             aQuery.perPage,

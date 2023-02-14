@@ -6,7 +6,7 @@ import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.genre.GenreId
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.MySQLGatewayTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
@@ -242,7 +242,7 @@ internal class GenreMySQLGatewayTest {
     ) {
         mockGenres()
 
-        val query = SeachQuery(expectedPage, expectedPerPage, "", "name", "asc")
+        val query = SearchQuery(expectedPage, expectedPerPage, "", "name", "asc")
         val actualResult = genreGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -261,7 +261,7 @@ internal class GenreMySQLGatewayTest {
 
         mockGenres()
 
-        val query = SeachQuery(expectedPage, expectedPerPage, "ho", "name", "asc")
+        val query = SearchQuery(expectedPage, expectedPerPage, "ho", "name", "asc")
         val actualResult = genreGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)
@@ -277,7 +277,7 @@ internal class GenreMySQLGatewayTest {
         val expectedPerPage = 0
         val expectedTotal = 0L
 
-        val query = SeachQuery(0, 1, "", "name", "asc")
+        val query = SearchQuery(0, 1, "", "name", "asc")
         val actualResult = genreGateway.findAll(query)
 
         assertThat(actualResult.currentPage).isEqualTo(expectedPage)

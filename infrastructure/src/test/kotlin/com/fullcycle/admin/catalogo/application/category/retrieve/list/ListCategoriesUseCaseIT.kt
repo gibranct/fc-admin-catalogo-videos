@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalogo.application.category.retrieve.list
 
 import com.fullcycle.admin.catalogo.domain.category.Category
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
@@ -47,7 +47,7 @@ internal class ListCategoriesUseCaseIT {
         val expectedItemsCount = 0
         val expectedTotal = 0L
 
-        val aQuery = SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val aQuery = SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val actualResult = listCategoryUseCase.execute(aQuery)
 
@@ -70,7 +70,7 @@ internal class ListCategoriesUseCaseIT {
         val expectedSort = "name"
         val expectedDirection = "asc"
 
-        val aQuery = SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val aQuery = SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val actualResult = listCategoryUseCase.execute(aQuery)
 
@@ -94,7 +94,7 @@ internal class ListCategoriesUseCaseIT {
     ) {
         val expectedTerms = ""
 
-        val aQuery = SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val aQuery = SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val actualResult = listCategoryUseCase.execute(aQuery)
 
@@ -118,7 +118,7 @@ internal class ListCategoriesUseCaseIT {
         val expectedDirection = "asc"
         val expectedTerms = ""
 
-        val aQuery = SeachQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
+        val aQuery = SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection)
 
         val actualResult = listCategoryUseCase.execute(aQuery)
 

@@ -8,7 +8,7 @@ import com.fullcycle.admin.catalogo.application.genre.retrieve.list.ListGenresUs
 import com.fullcycle.admin.catalogo.application.genre.update.UpdateGenreCommand
 import com.fullcycle.admin.catalogo.application.genre.update.UpdateGenreUseCase
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.api.GenreAPI
 import com.fullcycle.admin.catalogo.infrastructure.genre.models.CreateGenreRequest
 import com.fullcycle.admin.catalogo.infrastructure.genre.models.GenreListResponse
@@ -58,7 +58,7 @@ class GenreController(
         direction: String
     ): Pagination<GenreListResponse> {
         val outputPagination = listGenresUseCase.execute(
-            SeachQuery(
+            SearchQuery(
                 page = page,
                 perPage = perPage,
                 term = search,

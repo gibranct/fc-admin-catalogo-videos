@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation(project(":domain"))
 
+    testImplementation("com.github.javafaker:javafaker:1.0.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
     testImplementation("org.mockito:mockito-junit-jupiter:4.6.1")

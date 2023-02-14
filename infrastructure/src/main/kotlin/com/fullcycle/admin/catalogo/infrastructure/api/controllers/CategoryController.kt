@@ -7,8 +7,8 @@ import com.fullcycle.admin.catalogo.application.category.retrieve.get.GetCategor
 import com.fullcycle.admin.catalogo.application.category.retrieve.list.ListCategoriesUseCase
 import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryCommand
 import com.fullcycle.admin.catalogo.application.category.update.UpdateCategoryUseCase
-import com.fullcycle.admin.catalogo.domain.pagination.SeachQuery
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.api.CategoryAPI
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryListResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryResponse
@@ -66,7 +66,7 @@ class CategoryController(
         direction: String
     ): Pagination<CategoryListResponse> {
         return listCategoriesUseCase.execute(
-            SeachQuery(
+            SearchQuery(
                 page = page,
                 perPage = perPage,
                 term = search,

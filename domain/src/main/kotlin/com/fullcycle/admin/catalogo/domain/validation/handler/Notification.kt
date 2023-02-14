@@ -7,7 +7,7 @@ import com.fullcycle.admin.catalogo.domain.validation.Error
 class Notification private constructor(
     private val errors: MutableList<Error>
 ): ValidationHandler {
-    override fun validate(aError: Error): Notification {
+    override fun append(aError: Error): Notification {
         errors.add(aError)
         return this
     }
@@ -38,11 +38,11 @@ class Notification private constructor(
         }
 
         fun create(anError: Error): Notification {
-            return Notification(mutableListOf()).validate(anError)
+            return Notification(mutableListOf()).append(anError)
         }
 
         fun create(aThrowable: Throwable): Notification {
-            return Notification(mutableListOf()).validate(Error(aThrowable.message ?: ""))
+            return Notification(mutableListOf()).append(Error(aThrowable.message ?: ""))
         }
     }
 }

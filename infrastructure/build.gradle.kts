@@ -44,8 +44,8 @@ dependencies {
 
     implementation("mysql:mysql-connector-java")
 
-    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.9")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
+    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.13")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
 
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(module = "spring-boot-starter-tomcat")
@@ -55,16 +55,16 @@ dependencies {
 
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.6.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.8.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 
     implementation("io.arrow-kt:arrow-core:1.1.2")
 
     implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
 
-    implementation("org.testcontainers:testcontainers:1.17.2")
-    implementation("org.testcontainers:mysql:1.17.2")
-    implementation("org.testcontainers:junit-jupiter:1.17.2")
+    implementation("org.testcontainers:testcontainers:1.17.6")
+    implementation("org.testcontainers:mysql:1.17.6")
+    implementation("org.testcontainers:junit-jupiter:1.17.6")
 
     testRuntimeOnly("com.h2database:h2")
 }

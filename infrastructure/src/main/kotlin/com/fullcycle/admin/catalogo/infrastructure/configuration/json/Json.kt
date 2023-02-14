@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType.Object
 
 enum class Json {
 
