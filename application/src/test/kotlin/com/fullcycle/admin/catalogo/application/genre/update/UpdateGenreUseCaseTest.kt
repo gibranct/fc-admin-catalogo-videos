@@ -46,7 +46,7 @@ class UpdateGenreUseCaseTest: UseCaseTest() {
         val expectedErrorMessageCount = 1
         val expectedCategoriesIds = listOf(series, documentaries)
 
-        whenever(categoryGateway.existsById(any())).thenReturn(listOf(documentaries))
+        whenever(categoryGateway.existsByIds(any())).thenReturn(listOf(documentaries))
         whenever(genreGateway.findById(expectedGenreId)).thenReturn(genre)
 
         val aCommand = UpdateGenreCommand.with(expectedGenreId, expectedName, expectedIsActive, asString(expectedCategoriesIds))
@@ -57,7 +57,7 @@ class UpdateGenreUseCaseTest: UseCaseTest() {
         Assertions.assertEquals(notification.getErrors().size, expectedErrorMessageCount)
 
         verify(genreGateway, Mockito.times(0)).update(any())
-        verify(categoryGateway, Mockito.times(1)).existsById(any())
+        verify(categoryGateway, Mockito.times(1)).existsByIds(any())
     }
 
     @Test
@@ -111,7 +111,7 @@ class UpdateGenreUseCaseTest: UseCaseTest() {
         val aCommand = UpdateGenreCommand.with(expectedGenreId, expectedName, expectedIsActive, asString(expectedCategoriesIds))
 
         whenever(genreGateway.findById(expectedGenreId)).thenReturn(genre)
-        whenever(categoryGateway.existsById(any())).thenReturn(expectedCategoriesIds)
+        whenever(categoryGateway.existsByIds(any())).thenReturn(expectedCategoriesIds)
         whenever(genreGateway.update(any())).thenAnswer { it.arguments[0] }
 
         val updateGenreOutput = useCase.execute(aCommand)

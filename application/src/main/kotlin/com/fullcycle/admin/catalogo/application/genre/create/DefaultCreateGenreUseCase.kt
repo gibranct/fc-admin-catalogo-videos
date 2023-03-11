@@ -36,7 +36,7 @@ class DefaultCreateGenreUseCase(
             return notification
         }
 
-        val retrievedIds = this.categoryGateway.existsById(categoryIds)
+        val retrievedIds = this.categoryGateway.existsByIds(categoryIds)
         if (categoryIds.size != retrievedIds.size) {
             val missingIds = ArrayList<CategoryID>(categoryIds)
             missingIds.removeAll(retrievedIds.toSet())

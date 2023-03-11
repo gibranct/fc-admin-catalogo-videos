@@ -5,7 +5,7 @@ import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.MySQLGatewayTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreJpaEntity
@@ -189,7 +189,7 @@ internal class GenreMySQLGatewayTest {
     @Test
     fun givenAnInValidId_whenCallsGetGenreById_shouldReturnNull() {
         val aGenre = Genre.newGenre("any", true)
-        val expectedGenreId = GenreId.from("123")
+        val expectedGenreID = GenreID.from("123")
 
         assertThat(0).isEqualTo(genreRepository.count())
 
@@ -197,7 +197,7 @@ internal class GenreMySQLGatewayTest {
 
         assertThat(1).isEqualTo(genreRepository.count())
 
-        val persistedGenre = genreGateway.findById(expectedGenreId.value)
+        val persistedGenre = genreGateway.findById(expectedGenreID.value)
 
         assertThat(persistedGenre).isNull()
     }

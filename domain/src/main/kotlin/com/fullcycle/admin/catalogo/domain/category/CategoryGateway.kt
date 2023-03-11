@@ -14,6 +14,7 @@ interface CategoryGateway {
     fun update(category: Category): Category
 
     fun findAll(aQuery: SearchQuery): Pagination<Category>
-    fun existsById(categoryIds: Iterable<CategoryID>): List<CategoryID>
+
+    fun existsByIds(categoryIds: Iterable<CategoryID>): List<CategoryID>
 
 }

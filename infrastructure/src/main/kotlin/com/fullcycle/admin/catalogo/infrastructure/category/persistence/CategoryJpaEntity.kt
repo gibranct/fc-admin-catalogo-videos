@@ -9,7 +9,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity(name = "Category")
-@Table(name = "category")
+@Table(name = "categories")
 class CategoryJpaEntity private constructor(
     @Id val id: String,
     @Column(name = "name", nullable = false) val name: String,

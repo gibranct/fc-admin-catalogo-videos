@@ -16,7 +16,7 @@ import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
 import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.Genre
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification
@@ -199,7 +199,7 @@ class GenreAPITest {
 
     @Test
     fun givenAnInValidId_whenCallsGetCategory_shouldReturnNotFound() {
-        val expectedId = GenreId.from("123")
+        val expectedId = GenreID.from("123")
         val expectedErrorMessage = "${Genre::class.simpleName} with id ${expectedId.value} not found"
 
         Mockito.`when`(getGenreByIdUseCase.execute(any()))
@@ -254,7 +254,7 @@ class GenreAPITest {
         val expectedCategoriesIds = listOf<String>("123", "456")
 
         Mockito.`when`(updateGenreUseCase.execute(any()))
-            .thenThrow(NotFoundException.with(Genre::class, GenreId.from(expectedId)))
+            .thenThrow(NotFoundException.with(Genre::class, GenreID.from(expectedId)))
 
         val anInput = UpdateGenreRequest("any", expectedCategoriesIds, true)
 

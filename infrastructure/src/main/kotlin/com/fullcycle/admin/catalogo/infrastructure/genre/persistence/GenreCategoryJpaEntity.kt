@@ -10,8 +10,8 @@ import javax.persistence.Table
 @Entity
 @Table(name = "genres_categories")
 data class GenreCategoryJpaEntity(
-    @EmbeddedId() var id: GenreCategoryID,
-    @ManyToOne() @MapsId("genreId") var genre: GenreJpaEntity,
+    @EmbeddedId var id: GenreCategoryID,
+    @ManyToOne @MapsId("genreId") var genre: GenreJpaEntity,
 ) {
 
     internal constructor(genre: GenreJpaEntity, categoryID: CategoryID) : this(
@@ -26,7 +26,6 @@ data class GenreCategoryJpaEntity(
     companion object {
 
         fun from(genre: GenreJpaEntity, categoryID: CategoryID): GenreCategoryJpaEntity {
-            val id = GenreCategoryID.from(genreId = genre.id, categoryId = categoryID.value)
             return GenreCategoryJpaEntity(genre = genre, categoryID = categoryID)
         }
 

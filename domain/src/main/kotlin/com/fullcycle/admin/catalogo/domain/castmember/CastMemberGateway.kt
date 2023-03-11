@@ -15,5 +15,5 @@ interface CastMemberGateway {
 
     fun findAll(aQuery: SearchQuery): Pagination<CastMember>
 
-    fun existsById(castMemberIds: Iterable<CastMemberID>): List<CastMemberID>
+    fun existsByIds(castMemberIds: Iterable<CastMemberID>): List<CastMemberID>
 }

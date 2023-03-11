@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalogo.infrastructure.genre.persistence
 
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.Genre
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import java.time.Instant
 import java.util.*
 import javax.persistence.CascadeType.ALL
@@ -13,7 +13,7 @@ import javax.persistence.Id
 import javax.persistence.OneToMany
 import javax.persistence.Table
 
-@Entity
+@Entity(name = "Genre")
 @Table(name = "genres")
 data class GenreJpaEntity(
     @Id() val id: String,
@@ -60,7 +60,7 @@ data class GenreJpaEntity(
 
     fun toAggregate(): Genre {
         return Genre.with(
-            id = GenreId.from(this.id),
+            id = GenreID.from(this.id),
             name = name,
             active = active,
             categoriesIds = categories.map { CategoryID.from(it.id.categoryId) }.toMutableList(),

@@ -11,14 +11,12 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.times
-import org.mockito.junit.jupiter.MockitoExtension
 import java.util.*
 
 class CreateGenreUseCaseTest: UseCaseTest() {
@@ -75,7 +73,7 @@ class CreateGenreUseCaseTest: UseCaseTest() {
 
         val aCommand = CreateGenreCommand.with(expectedName, expectedIsActive, asString(expectedCategoriesIds))
 
-        whenever(categoryGateway.existsById(any())).thenReturn(expectedCategoriesIds)
+        whenever(categoryGateway.existsByIds(any())).thenReturn(expectedCategoriesIds)
 
         whenever(genreGateway.create(any())).thenAnswer {
             it.arguments[0]
@@ -86,7 +84,7 @@ class CreateGenreUseCaseTest: UseCaseTest() {
         Assertions.assertNotNull(actualOutput)
         Assertions.assertNotNull(actualOutput.id)
 
-        verify(categoryGateway, times(1)).existsById(expectedCategoriesIds)
+        verify(categoryGateway, times(1)).existsByIds(expectedCategoriesIds)
 
         verify(genreGateway, times(1))
             .create(argThat { aGenre ->
@@ -155,7 +153,7 @@ class CreateGenreUseCaseTest: UseCaseTest() {
 
         val aCommand = CreateGenreCommand.with("valid name", true, asString(expectedCategoriesIdsList))
 
-        whenever(categoryGateway.existsById(any())).thenReturn(listOf(movies))
+        whenever(categoryGateway.existsByIds(any())).thenReturn(listOf(movies))
 
         val notification = Assertions.assertThrows(NotificationException::class.java) { useCase.execute(aCommand) }.notification
 
@@ -163,7 +161,7 @@ class CreateGenreUseCaseTest: UseCaseTest() {
         Assertions.assertEquals(notification.getErrors().size, expectedErrorMessageCount)
 
         verify(genreGateway, times(0)).create(any())
-        verify(categoryGateway, times(1)).existsById(any())
+        verify(categoryGateway, times(1)).existsByIds(any())
     }
 
     @ParameterizedTest

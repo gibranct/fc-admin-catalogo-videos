@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalogo.e2e
 
 import com.fullcycle.admin.catalogo.domain.Identifier
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CategoryResponse
 import com.fullcycle.admin.catalogo.infrastructure.category.models.CreateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.configuration.json.Json
@@ -26,15 +26,15 @@ interface MockDsl {
         return CategoryID.from(categoryId!!)
     }
 
-    fun givenAGenre(expectedName: String, categories: List<CategoryID>, expectedIsActive: Boolean): GenreId {
+    fun givenAGenre(expectedName: String, categories: List<CategoryID>, expectedIsActive: Boolean): GenreID {
         val genreRequest = CreateGenreRequest(expectedName, categories.map(CategoryID::value), expectedIsActive)
 
         val genreId = this.given("/genres", genreRequest)
 
-        return GenreId.from(genreId!!)
+        return GenreID.from(genreId!!)
     }
 
-    fun retrieveGenre(anId: GenreId): GenreResponse {
+    fun retrieveGenre(anId: GenreID): GenreResponse {
         return this.retrieve("/genres/", anId, GenreResponse::class.java)
     }
 

@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.application.genre.retrieve.get
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.Assertions
@@ -53,7 +53,7 @@ internal class GetGenreUseCaseTestIT {
     @Test
     fun givenAnInValidId_whenCallsGetCategory_shouldReturnNotFound() {
         val aGenre = Genre.newGenre("Movies",true)
-        val expectedId = GenreId.from("132")
+        val expectedId = GenreID.from("132")
         val expectedErrorMessage = "Genre with id ${expectedId.value} not found"
         val expectedErrorCount = 1
 

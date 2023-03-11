@@ -1,13 +1,22 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
+
 buildscript {
+    val kotlinVersion = "1.6.21"
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
         classpath("org.flywaydb:flyway-mysql:8.5.10")
+        classpath("org.jetbrains.kotlin:kotlin-noarg:$kotlinVersion")
     }
+}
+
+apply {
+    plugin("kotlin-jpa")
 }
 
 plugins {

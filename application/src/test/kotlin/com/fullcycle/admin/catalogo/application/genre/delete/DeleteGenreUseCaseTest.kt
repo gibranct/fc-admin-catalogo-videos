@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.application.genre.delete
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.nhaarman.mockitokotlin2.doNothing
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.eq
@@ -40,7 +40,7 @@ class DeleteGenreUseCaseTest: UseCaseTest() {
 
     @Test
     fun givenAnInValidId_whenCallsDeleteCategory_shouldBeOk() {
-        val expectedId = GenreId.from("123")
+        val expectedId = GenreID.from("123")
 
         doNothing().`when`(genreGateway).deleteById(eq(expectedId.value))
 

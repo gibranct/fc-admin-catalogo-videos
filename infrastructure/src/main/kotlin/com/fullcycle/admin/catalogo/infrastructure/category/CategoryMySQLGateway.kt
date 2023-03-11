@@ -39,8 +39,8 @@ class CategoryMySQLGateway(
     }
 
     @Transactional
-    override fun update(aCategory: Category): Category {
-        return saveAndFlush(aCategory)
+    override fun update(category: Category): Category {
+        return saveAndFlush(category)
     }
 
     override fun findAll(aQuery: SearchQuery): Pagination<Category> {
@@ -67,7 +67,7 @@ class CategoryMySQLGateway(
         )
     }
 
-    override fun existsById(categoryIds: Iterable<CategoryID>): List<CategoryID> {
+    override fun existsByIds(categoryIds: Iterable<CategoryID>): List<CategoryID> {
         val ids = categoryIds.map { it.value }
         return categoryRepository.existsByIds(ids).map { CategoryID.from(it) }
     }

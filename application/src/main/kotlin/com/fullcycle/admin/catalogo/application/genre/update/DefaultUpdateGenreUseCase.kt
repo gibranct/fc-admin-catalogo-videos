@@ -7,7 +7,7 @@ import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification
@@ -17,11 +17,11 @@ data class DefaultUpdateGenreUseCase(
     private val categoryGateway: CategoryGateway
 ): UpdateGenreUseCase() {
 
-    override fun execute(aCommand: UpdateGenreCommand): UpdateGenreOutput {
-        val genre = findGenre(aCommand)
-        val name = aCommand.name
-        val isActive = aCommand.isActive
-        val categoriesIds = aCommand.categoriesIds.map(this::toCategoryId)
+    override fun execute(anIn: UpdateGenreCommand): UpdateGenreOutput {
+        val genre = findGenre(anIn)
+        val name = anIn.name
+        val isActive = anIn.isActive
+        val categoriesIds = anIn.categoriesIds.map(this::toCategoryId)
 
         val notification = Notification.create()
         notification.validate(validateCategories(categoriesIds))
@@ -40,7 +40,7 @@ data class DefaultUpdateGenreUseCase(
             return notification
         }
 
-        val retrievedIds = this.categoryGateway.existsById(categoryIds)
+        val retrievedIds = this.categoryGateway.existsByIds(categoryIds)
         if (categoryIds.size != retrievedIds.size) {
             val missingIds = ArrayList<CategoryID>(categoryIds)
             missingIds.removeAll(retrievedIds.toSet())
@@ -55,7 +55,7 @@ data class DefaultUpdateGenreUseCase(
 
     private fun findGenre(command: UpdateGenreCommand) =
         genreGateway.findById(command.id).toOption()
-            .fold({ throw NotFoundException.with(Genre::class, GenreId.from(command.id)) }, { it })
+            .fold({ throw NotFoundException.with(Genre::class, GenreID.from(command.id)) }, { it })
 
     private fun toCategoryId(id: String): CategoryID {
         return CategoryID.from(id)

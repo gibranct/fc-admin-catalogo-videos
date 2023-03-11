@@ -193,8 +193,6 @@ internal class GenreTest {
         Assertions.assertNotNull(genre.deletedAt)
         Assertions.assertEquals(genre.categoriesIds().size, 0)
 
-        val updatedAt = genre.updatedAt
-
         val notificationException = Assertions.assertThrowsExactly(NotificationException::class.java) {
             genre.update(
                 expectedName,

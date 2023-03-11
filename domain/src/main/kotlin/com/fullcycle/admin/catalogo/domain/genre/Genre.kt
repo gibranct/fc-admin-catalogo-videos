@@ -10,14 +10,14 @@ import java.time.Instant
 import java.util.*
 
 data class Genre internal constructor(
-    override val id: GenreId,
+    override val id: GenreID,
     var name: String,
     var active: Boolean,
     private var categoriesIds: MutableList<CategoryID>,
     val createdAt: Instant,
     var updatedAt: Instant,
     var deletedAt: Instant?,
-): AggregateRoot<GenreId>(id) {
+): AggregateRoot<GenreID>(id) {
 
     fun categoriesIds(): MutableList<CategoryID> {
         return Collections.unmodifiableList(this.categoriesIds)
@@ -38,7 +38,7 @@ data class Genre internal constructor(
             aName: String,
             isActive: Boolean,
         ): Genre {
-            val anId = GenreId.unique()
+            val anId = GenreID.unique()
             val now = Instant.now()
             val deletedAt = if (isActive)  null else now
 
@@ -51,7 +51,7 @@ data class Genre internal constructor(
 
 
         fun with(
-            id: GenreId,
+            id: GenreID,
             name: String,
             active: Boolean,
             categoriesIds: MutableList<CategoryID>,

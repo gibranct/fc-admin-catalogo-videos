@@ -15,4 +15,5 @@ interface GenreGateway {
 
     fun findAll(aQuery: SearchQuery): Pagination<Genre>
 
+    fun existsByIds(genreIds: Iterable<GenreID>): List<GenreID>
 }

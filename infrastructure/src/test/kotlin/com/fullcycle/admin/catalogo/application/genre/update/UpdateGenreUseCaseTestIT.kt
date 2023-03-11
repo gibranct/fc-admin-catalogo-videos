@@ -7,7 +7,7 @@ import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -136,7 +136,7 @@ internal class UpdateGenreUseCaseTestIT {
     @Test
     fun givenAValidCommand_whenGenreNotFound_shouldReturnNotFoundException() {
         val genre = Genre.newGenre("Movie", true)
-        val expectedGenreId = GenreId.from("123").value
+        val expectedGenreID = GenreID.from("123").value
         val expectedName = genre.name
         val expectedIsActive = true
         val expectedCategoriesIds = listOf<CategoryID>()
@@ -147,7 +147,7 @@ internal class UpdateGenreUseCaseTestIT {
 
         assertEquals(genreRepository.count(), 1)
 
-        val aCommand = UpdateGenreCommand.with(expectedGenreId, expectedName, expectedIsActive, asString(expectedCategoriesIds))
+        val aCommand = UpdateGenreCommand.with(expectedGenreID, expectedName, expectedIsActive, asString(expectedCategoriesIds))
 
         val notFoundException = assertThrows(NotFoundException::class.java) { useCase.execute(aCommand) }
 

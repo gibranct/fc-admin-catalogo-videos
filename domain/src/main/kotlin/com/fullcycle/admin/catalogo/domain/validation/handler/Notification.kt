@@ -12,8 +12,15 @@ class Notification private constructor(
         return this
     }
 
+    override fun append(anHandler: ValidationHandler): ValidationHandler {
+        if (anHandler.getErrors().isNotEmpty()) {
+            errors.addAll(anHandler.getErrors().toList())
+        }
+        return this
+    }
+
     override fun validate(validationHandler: ValidationHandler): Notification {
-        validationHandler.getErrors()?.let { errors.addAll(it) }
+        validationHandler.getErrors().let { errors.addAll(it) }
         return this
     }
 

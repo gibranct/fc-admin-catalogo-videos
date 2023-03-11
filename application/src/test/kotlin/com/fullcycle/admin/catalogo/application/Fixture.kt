@@ -55,7 +55,7 @@ class Fixture {
                 private val WESLEY = CastMember.newMember("Wesley FullCycle", CastMemberType.ACTOR)
                 private val GABRIEL = CastMember.newMember("Gabriel FullCycle", CastMemberType.ACTOR)
                 fun type(): CastMemberType {
-                    return FAKER.options().option(CastMemberType.ACTOR)
+                    return FAKER.options().option(CastMemberType.ACTOR, CastMemberType.DIRECTOR)
                 }
 
                 fun wesley(): CastMember {

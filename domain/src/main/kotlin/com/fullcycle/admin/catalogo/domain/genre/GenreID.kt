@@ -3,21 +3,21 @@ package com.fullcycle.admin.catalogo.domain.genre
 import com.fullcycle.admin.catalogo.domain.Identifier
 import java.util.*
 
-class GenreId(
+data class GenreID(
     override val value: String
 ): Identifier(value) {
 
     companion object {
-        fun unique(): GenreId {
+        fun unique(): GenreID {
             return from(UUID.randomUUID().toString().lowercase())
         }
 
-        fun from(anId: String): GenreId {
-            return GenreId(anId)
+        fun from(anId: String): GenreID {
+            return GenreID(anId)
         }
 
-        fun from(anId: UUID): GenreId {
-            return GenreId(anId.toString().lowercase())
+        fun from(anId: UUID): GenreID {
+            return GenreID(anId.toString().lowercase())
         }
     }
 }

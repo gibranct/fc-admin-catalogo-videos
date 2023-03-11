@@ -2,7 +2,7 @@ package com.fullcycle.admin.catalogo.application.genre.delete
 
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.domain.genre.GenreId
+import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -40,7 +40,7 @@ internal class DeleteGenreUseCaseTestIT {
     @Test
     fun givenAnInValidId_whenCallsDeleteCategory_shouldBeOk() {
         val genre = Genre.newGenre("Movies", true)
-        val expectedId = GenreId.from("123")
+        val expectedId = GenreID.from("123")
 
         assertEquals(genreRepository.count(), 0)
 

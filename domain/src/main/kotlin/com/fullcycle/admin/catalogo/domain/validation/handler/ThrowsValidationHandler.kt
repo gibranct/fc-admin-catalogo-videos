@@ -9,8 +9,12 @@ class ThrowsValidationHandler: ValidationHandler {
         throw DomainException.with(aError)
     }
 
+    override fun append(anHandler: ValidationHandler): ValidationHandler {
+        throw DomainException.with(anHandler.getErrors())
+    }
+
     override fun validate(validationHandler: ValidationHandler): ValidationHandler {
-        throw validationHandler.getErrors()?.let { DomainException.with(it) }!!
+        throw validationHandler.getErrors().let { DomainException.with(it) }
     }
 
     override fun <T> validate(validation: ValidationHandler.Validation<T>): T? {
@@ -21,7 +25,7 @@ class ThrowsValidationHandler: ValidationHandler {
         }
     }
 
-    override fun getErrors(): List<Error>? {
+    override fun getErrors(): List<Error> {
         return listOf()
     }
 }

@@ -63,7 +63,7 @@ class CastMemberMySQLGateway(
         )
     }
 
-    override fun existsById(castMemberIds: Iterable<CastMemberID>): List<CastMemberID> {
+    override fun existsByIds(castMemberIds: Iterable<CastMemberID>): List<CastMemberID> {
         val ids = castMemberIds.map { it.value }
         return castMemberRepository.existsByIds(ids).orEmpty().map { CastMemberID.from(it!!) }
     }
