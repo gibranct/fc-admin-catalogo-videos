@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.video
 
 import com.fullcycle.admin.catalogo.domain.Identifier
+import com.fullcycle.admin.catalogo.domain.utils.IdUtils
 import java.util.UUID
 
 data class VideoID (
@@ -9,7 +10,7 @@ data class VideoID (
 
     companion object {
         fun unique(): VideoID {
-            return from(UUID.randomUUID().toString().lowercase())
+            return from(IdUtils.uuid())
         }
 
         fun from(anId: String): VideoID {

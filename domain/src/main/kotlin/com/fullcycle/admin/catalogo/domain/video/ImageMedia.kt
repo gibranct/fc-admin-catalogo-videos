@@ -1,6 +1,8 @@
 package com.fullcycle.admin.catalogo.domain.video
 
 import com.fullcycle.admin.catalogo.domain.ValueObject
+import com.fullcycle.admin.catalogo.domain.utils.IdUtils
+import java.util.UUID
 
 data class ImageMedia(
     val id: String,
@@ -25,6 +27,18 @@ data class ImageMedia(
                 location = location
             )
         }
+
+        fun with(
+            checkSum: String,
+            name: String,
+            location: String,
+        ) = ImageMedia(
+                id = IdUtils.uuid(),
+                checksum = checkSum,
+                name = name,
+                location = location
+            )
+
 
     }
 

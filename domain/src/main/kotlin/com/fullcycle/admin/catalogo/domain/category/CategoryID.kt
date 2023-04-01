@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.category
 
 import com.fullcycle.admin.catalogo.domain.Identifier
+import com.fullcycle.admin.catalogo.domain.utils.IdUtils
 import java.util.UUID
 
 data class CategoryID(
@@ -9,7 +10,7 @@ data class CategoryID(
 
     companion object {
         fun unique(): CategoryID {
-            return from(UUID.randomUUID().toString().lowercase())
+            return from(IdUtils.uuid())
         }
 
         fun from(anId: String): CategoryID {

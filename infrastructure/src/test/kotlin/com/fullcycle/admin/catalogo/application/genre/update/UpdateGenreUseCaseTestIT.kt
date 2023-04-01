@@ -8,7 +8,7 @@ import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
-import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
+import com.fullcycle.admin.catalogo.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

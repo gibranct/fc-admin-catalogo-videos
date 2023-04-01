@@ -5,7 +5,7 @@ import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
-import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
+import com.fullcycle.admin.catalogo.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.genre.persistence.GenreRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

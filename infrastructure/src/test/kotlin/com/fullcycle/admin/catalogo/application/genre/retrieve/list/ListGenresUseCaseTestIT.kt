@@ -4,7 +4,7 @@ import com.fullcycle.admin.catalogo.domain.genre.Genre
 import com.fullcycle.admin.catalogo.domain.genre.GenreGateway
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.pagination.SearchQuery
-import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
+import com.fullcycle.admin.catalogo.IntegrationTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

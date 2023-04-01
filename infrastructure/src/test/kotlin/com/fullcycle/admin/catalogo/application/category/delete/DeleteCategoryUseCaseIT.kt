@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.application.category.delete
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
-import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
+import com.fullcycle.admin.catalogo.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.nhaarman.mockitokotlin2.doThrow

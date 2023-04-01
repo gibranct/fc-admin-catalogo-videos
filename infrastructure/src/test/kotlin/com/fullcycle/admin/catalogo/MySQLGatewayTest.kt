@@ -18,4 +18,4 @@ import java.lang.annotation.Inherited
     includeFilters = [ComponentScan.Filter(type = FilterType.REGEX, pattern = [".[MySQLGateway]"])]
 )
 @ExtendWith(MySQLCleanUpExtension::class)
-annotation class MySQLGatewayTest()
+annotation class MySQLGatewayTest

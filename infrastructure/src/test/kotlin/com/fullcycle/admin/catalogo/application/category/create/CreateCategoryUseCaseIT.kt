@@ -3,7 +3,7 @@ package com.fullcycle.admin.catalogo.application.category.create
 import arrow.core.getOrElse
 import com.fullcycle.admin.catalogo.domain.category.CategoryGateway
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification
-import com.fullcycle.admin.catalogo.infrastructure.IntegrationTest
+import com.fullcycle.admin.catalogo.IntegrationTest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doThrow

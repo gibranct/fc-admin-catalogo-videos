@@ -1,6 +1,6 @@
 package com.fullcycle.admin.catalogo.application.video.create
 
-import com.fullcycle.admin.catalogo.domain.video.Resource
+import com.fullcycle.admin.catalogo.domain.resource.Resource
 
 data class CreateVideoCommand(
     val title: String,

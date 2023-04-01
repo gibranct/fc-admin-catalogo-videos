@@ -45,6 +45,9 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
+    implementation("com.google.cloud:google-cloud-storage:2.20.1")
+    implementation("com.google.guava:guava:31.1-jre")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -54,7 +57,7 @@ dependencies {
     implementation("mysql:mysql-connector-java")
 
     implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.13")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
 
     implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude(module = "spring-boot-starter-tomcat")
@@ -64,7 +67,7 @@ dependencies {
 
     testImplementation("org.flywaydb:flyway-core")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 
     implementation("io.arrow-kt:arrow-core:1.1.2")

@@ -12,17 +12,23 @@ import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler
 import com.fullcycle.admin.catalogo.domain.validation.handler.Notification
-import com.fullcycle.admin.catalogo.domain.video.MediaSourceGateway
+import com.fullcycle.admin.catalogo.domain.video.MediaResourceGateway
 import com.fullcycle.admin.catalogo.domain.video.Rating
 import com.fullcycle.admin.catalogo.domain.video.Video
 import com.fullcycle.admin.catalogo.domain.video.VideoGateway
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType.BANNER
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType.THUMBNAIL
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType.THUMBNAIL_HALF
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType.TRAILER
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType.VIDEO
+import com.fullcycle.admin.catalogo.domain.video.VideoResource
 
 
 class DefaultCreateVideoUseCase(
     private val categoryGateway: CategoryGateway,
     private val castMemberGateway: CastMemberGateway,
     private val genreGateway: GenreGateway,
-    private val mediaResourceGateway: MediaSourceGateway,
+    private val mediaResourceGateway: MediaResourceGateway,
     private val videoGateway: VideoGateway,
 ) : CreateVideoUseCase() {
 
@@ -75,15 +81,15 @@ class DefaultCreateVideoUseCase(
     private fun create(aCommand: CreateVideoCommand, aVideo: Video): Video {
         val anId = aVideo.id
         return try {
-            val aVideoMedia = aCommand.video?.let { this.mediaResourceGateway.storeAudioVideo(anId, it) }
+            val aVideoMedia = aCommand.video?.let { this.mediaResourceGateway.storeAudioVideo(anId, VideoResource.with(VIDEO, it)) }
 
-            val aTrailerMedia = aCommand.trailer?.let { this.mediaResourceGateway.storeAudioVideo(anId, it) }
+            val aTrailerMedia = aCommand.trailer?.let { this.mediaResourceGateway.storeAudioVideo(anId, VideoResource.with(TRAILER, it)) }
 
-            val aBannerMedia = aCommand.banner?.let { this.mediaResourceGateway.storeImage(anId, it) }
+            val aBannerMedia = aCommand.banner?.let { this.mediaResourceGateway.storeImage(anId, VideoResource.with(BANNER, it)) }
 
-            val aThumbnailMedia = aCommand.thumbnail?.let { this.mediaResourceGateway.storeImage(anId, it) }
+            val aThumbnailMedia = aCommand.thumbnail?.let { this.mediaResourceGateway.storeImage(anId, VideoResource.with(THUMBNAIL, it)) }
 
-            val aThumbHalfMedia = aCommand.thumbnailHalf?.let { this.mediaResourceGateway.storeImage(anId, it) }
+            val aThumbHalfMedia = aCommand.thumbnailHalf?.let { this.mediaResourceGateway.storeImage(anId, VideoResource.with(THUMBNAIL_HALF, it)) }
 
             videoGateway.create(
                 aVideo

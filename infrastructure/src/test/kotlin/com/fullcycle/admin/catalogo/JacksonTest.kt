@@ -14,4 +14,4 @@ import java.lang.annotation.Inherited
 @JsonTest(includeFilters = [
     ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = [ObjectMapperConfig::class])
 ])
-annotation class JacksonTest()
+annotation class JacksonTest

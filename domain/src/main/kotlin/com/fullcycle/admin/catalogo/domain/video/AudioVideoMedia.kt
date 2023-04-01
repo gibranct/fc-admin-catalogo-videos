@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.video
 
 import com.fullcycle.admin.catalogo.domain.ValueObject
+import com.fullcycle.admin.catalogo.domain.utils.IdUtils
 import java.util.*
 
 data class AudioVideoMedia(
@@ -19,7 +20,7 @@ data class AudioVideoMedia(
             checkSum: String,
             name: String,
             rawLocation: String,
-        ) = AudioVideoMedia(UUID.randomUUID().toString(), checkSum, name, rawLocation, "", MediaStatus.PENDING)
+        ) = AudioVideoMedia(IdUtils.uuid(), checkSum, name, rawLocation, "", MediaStatus.PENDING)
 
         fun with(
             id: String,

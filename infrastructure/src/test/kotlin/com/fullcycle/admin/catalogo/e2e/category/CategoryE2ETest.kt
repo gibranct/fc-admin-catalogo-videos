@@ -1,7 +1,7 @@
 package com.fullcycle.admin.catalogo.e2e.category
 
+import com.fullcycle.admin.catalogo.E2ETest
 import com.fullcycle.admin.catalogo.e2e.MockDsl
-import com.fullcycle.admin.catalogo.infrastructure.E2ETest
 import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.fullcycle.admin.catalogo.infrastructure.configuration.json.Json

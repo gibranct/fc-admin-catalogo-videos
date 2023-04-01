@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.domain.genre
 
 import com.fullcycle.admin.catalogo.domain.Identifier
+import com.fullcycle.admin.catalogo.domain.utils.IdUtils
 import java.util.*
 
 data class GenreID(
@@ -9,7 +10,7 @@ data class GenreID(
 
     companion object {
         fun unique(): GenreID {
-            return from(UUID.randomUUID().toString().lowercase())
+            return from(IdUtils.uuid())
         }
 
         fun from(anId: String): GenreID {

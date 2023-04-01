@@ -18,5 +18,9 @@ class NotFoundException(
             val anError = "${anAggregate.simpleName} with id ${anIdentifier.value} not found"
             return NotFoundException(anError, listOf(Error(anError)))
         }
+
+        fun with(error: Error): NotFoundException {
+            return NotFoundException(error.message, listOf(error))
+        }
     }
 }

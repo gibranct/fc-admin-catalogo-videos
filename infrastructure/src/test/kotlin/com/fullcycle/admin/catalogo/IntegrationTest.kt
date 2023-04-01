@@ -1,6 +1,5 @@
-package com.fullcycle.admin.catalogo.infrastructure
+package com.fullcycle.admin.catalogo
 
-import com.fullcycle.admin.catalogo.MySQLCleanUpExtension
 import com.fullcycle.admin.catalogo.infrastructure.configuration.WebServerConfig
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,4 +12,4 @@ import java.lang.annotation.Inherited
 @ActiveProfiles("test-integration")
 @SpringBootTest(classes = [WebServerConfig::class])
 @ExtendWith(MySQLCleanUpExtension::class)
-annotation class IntegrationTest()
+annotation class IntegrationTest

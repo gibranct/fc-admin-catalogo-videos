@@ -1,9 +1,9 @@
 package com.fullcycle.admin.catalogo.e2e.genre
 
+import com.fullcycle.admin.catalogo.E2ETest
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.e2e.MockDsl
-import com.fullcycle.admin.catalogo.infrastructure.E2ETest
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.category.persistence.CategoryRepository
 import com.fullcycle.admin.catalogo.infrastructure.configuration.json.Json
