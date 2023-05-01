@@ -1,11 +1,13 @@
 package com.fullcycle.admin.catalogo.infrastructure.video
 
+import com.fullcycle.admin.catalogo.domain.event.DomainEventPublisher
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.video.Video
 import com.fullcycle.admin.catalogo.domain.video.VideoGateway
 import com.fullcycle.admin.catalogo.domain.video.VideoID
 import com.fullcycle.admin.catalogo.domain.video.VideoPreview
 import com.fullcycle.admin.catalogo.domain.video.VideoSearchQuery
+import com.fullcycle.admin.catalogo.infrastructure.services.EventService
 import com.fullcycle.admin.catalogo.infrastructure.video.persistence.VideoJpaEntity
 import com.fullcycle.admin.catalogo.infrastructure.video.persistence.VideoRepository
 import org.springframework.data.domain.PageRequest
@@ -16,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class DefaultVideoGateway(
-    private val videoRepository: VideoRepository
+    private val videoRepository: VideoRepository,
+    private val eventService: EventService,
 ) : VideoGateway {
 
     @Transactional
@@ -69,8 +72,12 @@ class DefaultVideoGateway(
     }
 
     private fun save(aVideo: Video): Video {
-        return videoRepository
+        val video = videoRepository
             .save(VideoJpaEntity.from(aVideo))
             .toAggregate()
+
+        video.publishDomainEvents(eventService::send)
+
+        return video
     }
 }

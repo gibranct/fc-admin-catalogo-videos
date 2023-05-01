@@ -3,6 +3,7 @@ package com.fullcycle.admin.catalogo.domain.video
 import com.fullcycle.admin.catalogo.domain.AggregateRoot
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
+import com.fullcycle.admin.catalogo.domain.event.DomainEvent
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.utils.InstantUtils
 import com.fullcycle.admin.catalogo.domain.validation.ValidationHandler
@@ -28,7 +29,8 @@ data class Video constructor(
     var genres: Set<GenreID>,
     var categories: Set<CategoryID>,
     var castMembers: Set<CastMemberID>,
-) : AggregateRoot<VideoID>(videoID) {
+    private val domainEvents: List<DomainEvent>? = emptyList(),
+) : AggregateRoot<VideoID>(videoID, domainEvents) {
 
 
     override fun validate(handler: ValidationHandler) {
@@ -95,6 +97,7 @@ data class Video constructor(
                 genres = aVideo.genres.toSet(),
                 categories = aVideo.categories.toSet(),
                 castMembers = aVideo.castMembers.toSet(),
+                domainEvents = aVideo.getDomainEvents(),
             )
         }
 
@@ -218,7 +221,7 @@ data class Video constructor(
 
     private fun onAudioVideoMediaUpdated(media: AudioVideoMedia?) {
         if (media != null && media.isPendingEncode()) {
-//            this.registerEvent(VideoMediaCreated.with(id.value, media.rawLocation))
+            this.registerEvent(VideoMediaCreated.with(id.value, media.rawLocation))
         }
     }
 }
