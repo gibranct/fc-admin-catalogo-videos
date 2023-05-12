@@ -35,7 +35,7 @@ class VideoUseCaseConfig(
 ) {
 
     @Bean
-    fun createVideoUseCase(): CreateVideoUseCase? {
+    fun createVideoUseCase(): CreateVideoUseCase {
         return DefaultCreateVideoUseCase(
             categoryGateway,
             castMemberGateway,
@@ -57,32 +57,32 @@ class VideoUseCaseConfig(
     }
 
     @Bean
-    fun getVideoByIdUseCase(): GetVideoByIdUseCase? {
+    fun getVideoByIdUseCase(): GetVideoByIdUseCase {
         return DefaultGetVideoByIdUseCase(videoGateway)
     }
 
     @Bean
-    fun deleteVideoUseCase(): DeleteVideoUseCase? {
+    fun deleteVideoUseCase(): DeleteVideoUseCase {
         return DefaultDeleteVideoUseCase(videoGateway, mediaResourceGateway)
     }
 
     @Bean
-    fun listVideosUseCase(): ListVideosUseCase? {
+    fun listVideosUseCase(): ListVideosUseCase {
         return DefaultListVideosUseCase(videoGateway)
     }
 
     @Bean
-    fun getMediaUseCase(): GetMediaUseCase? {
+    fun getMediaUseCase(): GetMediaUseCase {
         return DefaultGetMediaUseCase(mediaResourceGateway)
     }
 
     @Bean
-    fun uploadMediaUseCase(): UploadMediaUseCase? {
+    fun uploadMediaUseCase(): UploadMediaUseCase {
         return DefaultUploadMediaUseCase(mediaResourceGateway, videoGateway)
     }
 
     @Bean
-    fun updateMediaStatusUseCase(): UpdateMediaStatusUseCase? {
+    fun updateMediaStatusUseCase(): UpdateMediaStatusUseCase {
         return DefaultUpdateMediaStatusUseCase(videoGateway)
     }
 

@@ -1,6 +1,5 @@
 package com.fullcycle.admin.catalogo.application.castmember.retrieve.list
 
-import com.fullcycle.admin.catalogo.application.Fixture
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberGateway

@@ -1,9 +1,9 @@
-package com.fullcycle.admin.catalogo.application
+package com.fullcycle.admin.catalogo.domain
 
-import com.fullcycle.admin.catalogo.application.Fixture.Companion.CastMembers.gabriel
-import com.fullcycle.admin.catalogo.application.Fixture.Companion.CastMembers.wesley
-import com.fullcycle.admin.catalogo.application.Fixture.Companion.Categories.aulas
-import com.fullcycle.admin.catalogo.application.Fixture.Companion.Genres.tech
+import com.fullcycle.admin.catalogo.domain.Fixture.Companion.CastMembers.gabriel
+import com.fullcycle.admin.catalogo.domain.Fixture.Companion.CastMembers.wesley
+import com.fullcycle.admin.catalogo.domain.Fixture.Companion.Categories.aulas
+import com.fullcycle.admin.catalogo.domain.Fixture.Companion.Genres.tech
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberType
 import com.fullcycle.admin.catalogo.domain.category.Category
@@ -13,6 +13,7 @@ import com.fullcycle.admin.catalogo.domain.utils.IdUtils
 import com.fullcycle.admin.catalogo.domain.video.*
 import com.github.javafaker.Faker
 import java.util.*
+
 
 class Fixture {
 
@@ -58,8 +59,6 @@ class Fixture {
                 setOf(wesley().id, gabriel().id)
             )
         }
-
-        fun name(): String = FAKER.name().name()
 
 
         object Categories {

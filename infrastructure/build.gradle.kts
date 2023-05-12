@@ -68,6 +68,8 @@ dependencies {
 
     implementation("io.arrow-kt:arrow-core:1.1.2")
 
+    testImplementation("com.github.javafaker:javafaker:1.0.2")
+
     testImplementation("org.flywaydb:flyway-core")
 
     testImplementation("org.springframework.amqp:spring-rabbit-test:2.4.4")

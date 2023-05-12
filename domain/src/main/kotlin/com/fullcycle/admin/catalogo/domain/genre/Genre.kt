@@ -69,6 +69,18 @@ data class Genre internal constructor(
             return genre
         }
 
+        fun with(aGenre: Genre): Genre {
+            return Genre(
+                aGenre.id,
+                aGenre.name,
+                aGenre.active,
+                aGenre.categoriesIds.toMutableList(),
+                aGenre.createdAt,
+                aGenre.updatedAt,
+                aGenre.deletedAt
+            )
+        }
+
     }
 
     override fun validate(handler: ValidationHandler) {

@@ -8,5 +8,5 @@ data class VideoListResponse(
     val title: String,
     val description: String,
     val createdAt: Instant,
-    val updatedA: Instant,
+    val updatedAt: Instant,
 )
