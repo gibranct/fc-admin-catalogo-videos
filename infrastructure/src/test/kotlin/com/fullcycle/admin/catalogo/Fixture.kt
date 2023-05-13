@@ -20,7 +20,7 @@ class Fixture {
 
         private val FAKER = Faker()
 
-        private fun bool(): Boolean {
+        fun bool(): Boolean {
             return FAKER.bool().bool()
         }
 
@@ -28,7 +28,7 @@ class Fixture {
             return "03fe62de"
         }
 
-        private fun title(): String {
+        fun title(): String {
             return FAKER.options().option(
                 "System Design no Mercado Livre na prática",
                 "Não cometa esses erros ao trabalhar com Microsserviços",
@@ -40,7 +40,7 @@ class Fixture {
             return FAKER.options().option(120.0, 15.5, 35.5, 10.0, 2.0)
         }
 
-        private fun year(): Int {
+        fun year(): Int {
             return FAKER.random().nextInt(2020, 2030)
         }
 

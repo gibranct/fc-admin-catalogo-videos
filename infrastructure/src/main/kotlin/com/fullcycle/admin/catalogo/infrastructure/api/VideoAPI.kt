@@ -54,21 +54,21 @@ interface VideoAPI {
         ), ApiResponse(responseCode = "500", description = "An internal server error was thrown")]
     )
     fun createFull(
-        @RequestParam(name = "title", required = false) title: String?,
-        @RequestParam(name = "description", required = false) description: String?,
-        @RequestParam(name = "year_launched", required = false) yearLaunched: Int?,
-        @RequestParam(name = "duration", required = false) duration: Double?,
-        @RequestParam(name = "opened", required = false) opened: Boolean?,
-        @RequestParam(name = "published", required = false) published: Boolean?,
-        @RequestParam(name = "rating", required = false) rating: String?,
-        @RequestParam(name = "categories_id", required = false) categories: Set<String?>?,
-        @RequestParam(name = "cast_members_id", required = false) castMembers: Set<String?>?,
-        @RequestParam(name = "genres_id", required = false) genres: Set<String?>?,
+        @RequestParam(name = "title", required = false) title: String,
+        @RequestParam(name = "description", required = false) description: String,
+        @RequestParam(name = "year_launched", required = false) yearLaunched: Int,
+        @RequestParam(name = "duration", required = false) duration: Double,
+        @RequestParam(name = "opened", required = false) opened: Boolean,
+        @RequestParam(name = "published", required = false) published: Boolean,
+        @RequestParam(name = "rating", required = false) rating: String,
+        @RequestParam(name = "categories_id", required = false) categories: Set<String>,
+        @RequestParam(name = "cast_members_id", required = false) castMembers: Set<String>,
+        @RequestParam(name = "genres_id", required = false) genres: Set<String>,
         @RequestParam(name = "video_file", required = false) videoFile: MultipartFile?,
         @RequestParam(name = "trailer_file", required = false) trailerFile: MultipartFile?,
         @RequestParam(name = "banner_file", required = false) bannerFile: MultipartFile?,
         @RequestParam(name = "thumb_file", required = false) thumbFile: MultipartFile?,
-        @RequestParam(name = "thumb_half_file", required = false) thumbHalfFile: MultipartFile?
+        @RequestParam(name = "thumb_half_file", required = false) thumbHalfFile: MultipartFile?,
     ): ResponseEntity<*>
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -92,7 +92,7 @@ interface VideoAPI {
             description = "Video was not found"
         ), ApiResponse(responseCode = "500", description = "An internal server error was thrown")]
     )
-    fun getById(@PathVariable(name = "id") id: String?): VideoResponse
+    fun getById(@PathVariable(name = "id") id: String): VideoResponse
 
     @PutMapping(
         value = ["{id}"],

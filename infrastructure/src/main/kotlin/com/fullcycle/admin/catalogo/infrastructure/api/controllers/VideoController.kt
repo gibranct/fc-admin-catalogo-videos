@@ -1,5 +1,8 @@
 package com.fullcycle.admin.catalogo.infrastructure.api.controllers
 
+import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
+import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
@@ -15,14 +18,16 @@ import com.fullcycle.admin.catalogo.infrastructure.video.models.VideoListRespons
 import com.fullcycle.admin.catalogo.infrastructure.video.models.VideoResponse
 import com.fullcycle.admin.catalogo.infrastructure.video.presenters.VideoApiPresenter
 import org.springframework.http.ResponseEntity
-import org.springframework.util.CollectionUtils
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.net.URI
 
 
 @RestController
 class VideoController(
+    private val createVideoUseCase: CreateVideoUseCase,
     private val listVideosUseCase: ListVideosUseCase,
+    private val getVideoByIdUseCase: GetVideoByIdUseCase,
 ) : VideoAPI {
     override fun list(
         search: String?,
@@ -47,32 +52,50 @@ class VideoController(
     }
 
     override fun createFull(
-        title: String?,
-        description: String?,
-        yearLaunched: Int?,
-        duration: Double?,
-        opened: Boolean?,
-        published: Boolean?,
-        rating: String?,
-        categories: Set<String?>?,
-        castMembers: Set<String?>?,
-        genres: Set<String?>?,
+        title: String,
+        description: String,
+        yearLaunched: Int,
+        duration: Double,
+        opened: Boolean,
+        published: Boolean,
+        rating: String,
+        categories: Set<String>,
+        castMembers: Set<String>,
+        genres: Set<String>,
         videoFile: MultipartFile?,
         trailerFile: MultipartFile?,
         bannerFile: MultipartFile?,
         thumbFile: MultipartFile?,
-        thumbHalfFile: MultipartFile?
+        thumbHalfFile: MultipartFile?,
     ): ResponseEntity<*> {
-        TODO("Not yet implemented")
+        val aCmd = CreateVideoCommand.with(
+            title,
+            description,
+            yearLaunched,
+            duration,
+            opened,
+            published,
+            rating,
+            categories,
+            genres,
+            castMembers,
+            resourceOf(videoFile),
+            resourceOf(trailerFile),
+            resourceOf(bannerFile),
+            resourceOf(thumbFile),
+            resourceOf(thumbHalfFile)
+        );
+
+        val output = this.createVideoUseCase.execute(aCmd);
+
+        return ResponseEntity.created(URI.create("/videos/" + output.id)).body(output);
     }
 
     override fun createPartial(payload: CreateVideoRequest?): ResponseEntity<*> {
         TODO("Not yet implemented")
     }
 
-    override fun getById(id: String?): VideoResponse {
-        TODO("Not yet implemented")
-    }
+    override fun getById(id: String): VideoResponse = VideoApiPresenter.present(getVideoByIdUseCase.execute(id))
 
     override fun update(id: String, payload: UpdateVideoRequest): ResponseEntity<*>? {
         TODO("Not yet implemented")

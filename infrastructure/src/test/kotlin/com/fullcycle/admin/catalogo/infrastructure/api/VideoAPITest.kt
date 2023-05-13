@@ -2,12 +2,17 @@ package com.fullcycle.admin.catalogo.infrastructure.api
 
 import com.fullcycle.admin.catalogo.ControllerTest
 import com.fullcycle.admin.catalogo.Fixture
+import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
+import com.fullcycle.admin.catalogo.application.video.create.CreateVideoOutput
+import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.VideoListOutput
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.domain.video.VideoID
 import com.fullcycle.admin.catalogo.domain.video.VideoPreview
 import com.fullcycle.admin.catalogo.domain.video.VideoSearchQuery
 import com.nhaarman.mockitokotlin2.any
@@ -23,11 +28,12 @@ import org.mockito.Captor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 
 @ControllerTest(controllers = [VideoAPI::class])
@@ -39,8 +45,17 @@ class VideoAPITest {
     @MockBean
     private lateinit var listVideosUseCase: ListVideosUseCase
 
+    @MockBean
+    private lateinit var createVideoUseCase: CreateVideoUseCase
+
+    @MockBean
+    private lateinit var getVideoByIdUseCase: GetVideoByIdUseCase
+
     @Captor
     private lateinit var captor: ArgumentCaptor<VideoSearchQuery>
+
+    @Captor
+    private lateinit var createCaptor: ArgumentCaptor<CreateVideoCommand>
 
     @Test
     fun givenValidParams_whenCallsListVideos_shouldReturnPagination() {
@@ -139,5 +154,90 @@ class VideoAPITest {
         Assertions.assertTrue(actualQuery.categories.isEmpty())
         Assertions.assertTrue(actualQuery.castMembers.isEmpty())
         Assertions.assertTrue(actualQuery.genres.isEmpty())
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidCommand_whenCallsCreateFull_shouldReturnAnId() {
+        // given
+        val wesley = Fixture.Companion.CastMembers.wesley()
+        val aulas = Fixture.Companion.Categories.aulas()
+        val tech = Fixture.Companion.Genres.tech()
+        val expectedId = VideoID.unique()
+        val expectedTitle = Fixture.title()
+        val expectedDescription = Fixture.Companion.Videos.description()
+        val expectedLaunchYear = Fixture.year()
+        val expectedDuration = Fixture.duration()
+        val expectedOpened = Fixture.bool()
+        val expectedPublished = Fixture.bool()
+        val expectedRating = Fixture.Companion.Videos.rating()
+        val expectedCategories = setOf(aulas.id.value)
+        val expectedGenres = setOf(tech.id.value)
+        val expectedMembers = setOf(wesley.id.value)
+        val expectedVideo = MockMultipartFile("video_file", "video.mp4", "video/mp4", "VIDEO".toByteArray())
+        val expectedTrailer = MockMultipartFile("trailer_file", "trailer.mp4", "video/mp4", "TRAILER".toByteArray())
+        val expectedBanner = MockMultipartFile("banner_file", "banner.jpg", "image/jpg", "BANNER".toByteArray())
+        val expectedThumb = MockMultipartFile("thumb_file", "thumbnail.jpg", "image/jpg", "THUMB".toByteArray())
+        val expectedThumbHalf =
+            MockMultipartFile("thumb_half_file", "thumbnailHalf.jpg", "image/jpg", "THUMBHALF".toByteArray())
+        whenever(createVideoUseCase.execute(any())).thenReturn(CreateVideoOutput(expectedId.value))
+
+        // when
+        val aRequest = multipart("/videos")
+            .file(expectedVideo)
+            .file(expectedTrailer)
+            .file(expectedBanner)
+            .file(expectedThumb)
+            .file(expectedThumbHalf)
+            .param("title", expectedTitle)
+            .param("description", expectedDescription)
+            .param("year_launched", expectedLaunchYear.toString())
+            .param("duration", expectedDuration.toString())
+            .param("opened", expectedOpened.toString())
+            .param("published", expectedPublished.toString())
+            .param("rating", expectedRating.name)
+            .param("cast_members_id", wesley.id.value)
+            .param("categories_id", aulas.id.value)
+            .param("genres_id", tech.id.value)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+        mvc.perform(aRequest)
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "/videos/" + expectedId.value))
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id", equalTo(expectedId.value)))
+
+        // then
+        verify(createVideoUseCase).execute(capture(createCaptor))
+        val actualCmd = createCaptor.value
+        Assertions.assertEquals(expectedTitle, actualCmd.title)
+        Assertions.assertEquals(expectedDescription, actualCmd.description)
+        Assertions.assertEquals(expectedLaunchYear, actualCmd.launchedAt)
+        Assertions.assertEquals(expectedDuration, actualCmd.duration)
+        Assertions.assertEquals(expectedOpened, actualCmd.opened)
+        Assertions.assertEquals(expectedPublished, actualCmd.published)
+        Assertions.assertEquals(expectedRating.name, actualCmd.rating)
+        Assertions.assertEquals(expectedCategories, actualCmd.categories)
+        Assertions.assertEquals(expectedGenres, actualCmd.genres)
+        Assertions.assertEquals(expectedMembers, actualCmd.members)
+        Assertions.assertEquals(expectedVideo.originalFilename, actualCmd.video?.name)
+        Assertions.assertEquals(expectedTrailer.originalFilename, actualCmd.trailer?.name)
+        Assertions.assertEquals(expectedBanner.originalFilename, actualCmd.banner?.name)
+        Assertions.assertEquals(expectedThumb.originalFilename, actualCmd.thumbnail?.name)
+        Assertions.assertEquals(expectedThumbHalf.originalFilename, actualCmd.thumbnailHalf?.name)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnInvalidCommand_whenCallsCreateFull_shouldReturnError() {
+        // given
+        // when
+        val aRequest = multipart("/videos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.MULTIPART_FORM_DATA)
+
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
     }
 }

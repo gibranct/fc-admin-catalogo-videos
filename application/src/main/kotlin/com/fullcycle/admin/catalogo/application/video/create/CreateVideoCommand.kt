@@ -33,11 +33,11 @@ data class CreateVideoCommand(
             categories: Set<String>,
             genres: Set<String>,
             members: Set<String>,
-            video: Resource,
-            trailer: Resource,
-            banner: Resource,
-            thumbnail: Resource,
-            thumbnailHalf: Resource,
+            video: Resource?,
+            trailer: Resource?,
+            banner: Resource?,
+            thumbnail: Resource?,
+            thumbnailHalf: Resource?,
         ): CreateVideoCommand {
             return CreateVideoCommand(
                 title,
