@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalogo.infrastructure.api.controllers
 
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoCommand
@@ -31,6 +32,7 @@ class VideoController(
     private val listVideosUseCase: ListVideosUseCase,
     private val getVideoByIdUseCase: GetVideoByIdUseCase,
     private val updateVideoUseCase: UpdateVideoUseCase,
+    private val deleteVideoUseCase: DeleteVideoUseCase,
 ) : VideoAPI {
     override fun list(
         search: String?,
@@ -138,7 +140,7 @@ class VideoController(
     }
 
     override fun deleteById(id: String) {
-        TODO("Not yet implemented")
+        this.deleteVideoUseCase.execute(id);
     }
 
     override fun getMediaByType(id: String, type: String): ResponseEntity<ByteArray> {

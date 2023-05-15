@@ -6,6 +6,7 @@ import com.fullcycle.admin.catalogo.Fixture
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoOutput
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.VideoOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
@@ -23,10 +24,7 @@ import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.video.*
 import com.fullcycle.admin.catalogo.infrastructure.video.models.CreateVideoRequest
 import com.fullcycle.admin.catalogo.infrastructure.video.models.UpdateVideoRequest
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.capture
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Assertions
@@ -64,6 +62,9 @@ class VideoAPITest {
 
     @MockBean
     private lateinit var updateVideoUseCase: UpdateVideoUseCase
+
+    @MockBean
+    private lateinit var deleteVideoUseCase: DeleteVideoUseCase
 
     @Captor
     private lateinit var captor: ArgumentCaptor<VideoSearchQuery>
@@ -586,5 +587,22 @@ class VideoAPITest {
             .andExpect(jsonPath("$.errors", hasSize<Int>(expectedErrorCount)))
             .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)))
         verify(updateVideoUseCase).execute(any())
+    }
+
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidId_whenCallsDeleteById_shouldDeleteIt() {
+        // given
+        val expectedId = VideoID.unique()
+        doNothing().`when`(deleteVideoUseCase).execute(any())
+
+        // when
+        val aRequest = delete("/videos/{id}", expectedId.value)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isNoContent())
+        verify(deleteVideoUseCase).execute(eq(expectedId.value))
     }
 }
