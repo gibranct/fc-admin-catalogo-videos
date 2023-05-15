@@ -20,5 +20,5 @@ data class VideoResponse(
     val trailer: AudioVideoMediaResponse?,
     val categoriesId: Set<String>,
     val genresId: Set<String>,
-    val castMembersI: Set<String>,
+    val castMembersId: Set<String>,
 )

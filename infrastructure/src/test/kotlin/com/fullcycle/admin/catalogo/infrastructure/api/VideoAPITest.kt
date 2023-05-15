@@ -7,17 +7,17 @@ import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoOutput
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
+import com.fullcycle.admin.catalogo.application.video.retrieve.get.VideoOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.VideoListOutput
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
+import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.validation.Error
-import com.fullcycle.admin.catalogo.domain.video.VideoID
-import com.fullcycle.admin.catalogo.domain.video.VideoPreview
-import com.fullcycle.admin.catalogo.domain.video.VideoSearchQuery
+import com.fullcycle.admin.catalogo.domain.video.*
 import com.fullcycle.admin.catalogo.infrastructure.video.models.CreateVideoRequest
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
@@ -350,5 +350,116 @@ class VideoAPITest {
         // then
         response.andExpect(status().isUnprocessableEntity())
             .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+    }
+
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidId_whenCallsGetById_shouldReturnVideo() {
+        // given
+        val wesley = Fixture.Companion.CastMembers.wesley()
+        val aulas = Fixture.Companion.Categories.aulas()
+        val tech = Fixture.Companion.Genres.tech()
+        val expectedTitle = Fixture.title()
+        val expectedDescription = Fixture.Companion.Videos.description()
+        val expectedLaunchYear = Fixture.year()
+        val expectedDuration = Fixture.duration()
+        val expectedOpened = Fixture.bool()
+        val expectedPublished = Fixture.bool()
+        val expectedRating = Fixture.Companion.Videos.rating()
+        val expectedCategories = setOf(aulas.id.value)
+        val expectedGenres = setOf(tech.id.value)
+        val expectedMembers = setOf(wesley.id.value)
+        val expectedVideo = Fixture.Companion.Videos.audioVideo(VideoMediaType.VIDEO)
+        val expectedTrailer = Fixture.Companion.Videos.audioVideo(VideoMediaType.TRAILER)
+        val expectedBanner = Fixture.Companion.Videos.image(VideoMediaType.BANNER)
+        val expectedThumb = Fixture.Companion.Videos.image(VideoMediaType.THUMBNAIL)
+        val expectedThumbHalf = Fixture.Companion.Videos.image(VideoMediaType.THUMBNAIL_HALF)
+        val aVideo = Video.newVideo(
+            expectedTitle,
+            expectedDescription,
+            expectedLaunchYear,
+            expectedDuration,
+            expectedOpened,
+            expectedPublished,
+            expectedRating,
+            expectedCategories.map(CategoryID::from).toSet(),
+            expectedGenres.map(GenreID::from).toSet(),
+            expectedMembers.map(CastMemberID::from).toSet(),
+        )
+            .updateVideoMedia(expectedVideo)
+            .updateTrailerMedia(expectedTrailer)
+            .updateBannerMedia(expectedBanner)
+            .updateThumbnailMedia(expectedThumb)
+            .updateThumbnailHalfMedia(expectedThumbHalf)
+        val expectedId = aVideo.id.value
+        `when`(getVideoByIdUseCase.execute(any()))
+            .thenReturn(VideoOutput.from(aVideo))
+
+        // when
+        val aRequest = get("/videos/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isOk())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id", equalTo(expectedId)))
+            .andExpect(jsonPath("$.title", equalTo(expectedTitle)))
+            .andExpect(jsonPath("$.description", equalTo(expectedDescription)))
+            .andExpect(jsonPath("$.year_launched", equalTo(expectedLaunchYear)))
+            .andExpect(jsonPath("$.duration", equalTo(expectedDuration)))
+            .andExpect(jsonPath("$.opened", equalTo(expectedOpened)))
+            .andExpect(jsonPath("$.published", equalTo(expectedPublished)))
+            .andExpect(jsonPath("$.rating", equalTo(expectedRating.name)))
+            .andExpect(jsonPath("$.created_at", equalTo(aVideo.createdAt.toString())))
+            .andExpect(jsonPath("$.updated_at", equalTo(aVideo.updatedAt.toString())))
+            .andExpect(jsonPath("$.banner.id", equalTo(expectedBanner.id)))
+            .andExpect(jsonPath("$.banner.name", equalTo(expectedBanner.name)))
+            .andExpect(jsonPath("$.banner.location", equalTo(expectedBanner.location)))
+            .andExpect(jsonPath("$.banner.checksum", equalTo(expectedBanner.checksum)))
+            .andExpect(jsonPath("$.thumbnail.id", equalTo(expectedThumb.id)))
+            .andExpect(jsonPath("$.thumbnail.name", equalTo(expectedThumb.name)))
+            .andExpect(jsonPath("$.thumbnail.location", equalTo(expectedThumb.location)))
+            .andExpect(jsonPath("$.thumbnail.checksum", equalTo(expectedThumb.checksum)))
+            .andExpect(jsonPath("$.thumbnail_half.id", equalTo(expectedThumbHalf.id)))
+            .andExpect(jsonPath("$.thumbnail_half.name", equalTo(expectedThumbHalf.name)))
+            .andExpect(jsonPath("$.thumbnail_half.location", equalTo(expectedThumbHalf.location)))
+            .andExpect(jsonPath("$.thumbnail_half.checksum", equalTo(expectedThumbHalf.checksum)))
+            .andExpect(jsonPath("$.video.id", equalTo(expectedVideo.id)))
+            .andExpect(jsonPath("$.video.name", equalTo(expectedVideo.name)))
+            .andExpect(jsonPath("$.video.checksum", equalTo(expectedVideo.checksum)))
+            .andExpect(jsonPath("$.video.raw_location", equalTo(expectedVideo.rawLocation)))
+            .andExpect(jsonPath("$.video.encoded_location", equalTo(expectedVideo.encodedLocation)))
+            .andExpect(jsonPath("$.video.status", equalTo(expectedVideo.status.name)))
+            .andExpect(jsonPath("$.trailer.id", equalTo(expectedTrailer.id)))
+            .andExpect(jsonPath("$.trailer.name", equalTo(expectedTrailer.name)))
+            .andExpect(jsonPath("$.trailer.checksum", equalTo(expectedTrailer.checksum)))
+            .andExpect(jsonPath("$.trailer.raw_location", equalTo(expectedTrailer.rawLocation)))
+            .andExpect(jsonPath("$.trailer.encoded_location", equalTo(expectedTrailer.encodedLocation)))
+            .andExpect(jsonPath("$.trailer.status", equalTo(expectedTrailer.status.name)))
+            .andExpect(jsonPath("$.categories_id", equalTo(ArrayList<Any?>(expectedCategories))))
+            .andExpect(jsonPath("$.genres_id", equalTo(ArrayList<Any?>(expectedGenres))))
+            .andExpect(jsonPath("$.cast_members_id", equalTo(ArrayList<Any?>(expectedMembers))))
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnInvalidId_whenCallsGetById_shouldReturnNotFound() {
+        // given
+        val expectedId = VideoID.unique()
+        val expectedErrorMessage = "Video with id ${expectedId.value} not found"
+        whenever(getVideoByIdUseCase.execute(any()))
+            .thenThrow(NotFoundException.with(Video::class, expectedId))
+
+        // when
+        val aRequest = get("/videos/{id}", expectedId)
+            .accept(MediaType.APPLICATION_JSON)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isNotFound())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
     }
 }
