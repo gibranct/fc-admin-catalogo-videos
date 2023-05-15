@@ -84,15 +84,30 @@ class VideoController(
             resourceOf(bannerFile),
             resourceOf(thumbFile),
             resourceOf(thumbHalfFile)
-        );
+        )
 
-        val output = this.createVideoUseCase.execute(aCmd);
+        val output = this.createVideoUseCase.execute(aCmd)
 
-        return ResponseEntity.created(URI.create("/videos/" + output.id)).body(output);
+        return ResponseEntity.created(URI.create("/videos/" + output.id)).body(output)
     }
 
-    override fun createPartial(payload: CreateVideoRequest?): ResponseEntity<*> {
-        TODO("Not yet implemented")
+    override fun createPartial(payload: CreateVideoRequest): ResponseEntity<*> {
+        val aCmd = CreateVideoCommand.with(
+            payload.title,
+            payload.description,
+            payload.yearLaunched,
+            payload.duration,
+            payload.opened,
+            payload.published,
+            payload.rating,
+            payload.categories,
+            payload.genres,
+            payload.castMembers,
+        )
+
+        val output = this.createVideoUseCase.execute(aCmd)
+
+        return ResponseEntity.created(URI.create("/videos/" + output.id)).body(output)
     }
 
     override fun getById(id: String): VideoResponse = VideoApiPresenter.present(getVideoByIdUseCase.execute(id))

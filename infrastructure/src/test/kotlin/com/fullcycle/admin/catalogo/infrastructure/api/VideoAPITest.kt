@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.infrastructure.api
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fullcycle.admin.catalogo.ControllerTest
 import com.fullcycle.admin.catalogo.Fixture
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
@@ -10,11 +11,14 @@ import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUs
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.VideoListOutput
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
+import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
+import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.video.VideoID
 import com.fullcycle.admin.catalogo.domain.video.VideoPreview
 import com.fullcycle.admin.catalogo.domain.video.VideoSearchQuery
+import com.fullcycle.admin.catalogo.infrastructure.video.models.CreateVideoRequest
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.verify
@@ -25,14 +29,14 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 
@@ -41,6 +45,9 @@ class VideoAPITest {
 
     @Autowired
     private lateinit var mvc: MockMvc
+
+    @Autowired
+    private lateinit var mapper: ObjectMapper
 
     @MockBean
     private lateinit var listVideosUseCase: ListVideosUseCase
@@ -234,6 +241,110 @@ class VideoAPITest {
         // when
         val aRequest = multipart("/videos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.MULTIPART_FORM_DATA)
 
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidCommand_whenCallsCreatePartial_shouldReturnId() {
+        // given
+        val wesley = Fixture.Companion.CastMembers.wesley()
+        val aulas = Fixture.Companion.Categories.aulas()
+        val tech = Fixture.Companion.Genres.tech()
+        val expectedId = VideoID.unique()
+        val expectedTitle = Fixture.title()
+        val expectedDescription = Fixture.Companion.Videos.description()
+        val expectedLaunchYear = Fixture.year()
+        val expectedDuration = Fixture.duration()
+        val expectedOpened = Fixture.bool()
+        val expectedPublished = Fixture.bool()
+        val expectedRating = Fixture.Companion.Videos.rating()
+        val expectedCategories = setOf(aulas.id.value)
+        val expectedGenres = setOf(tech.id.value)
+        val expectedMembers = setOf(wesley.id.value)
+        val aCmd = CreateVideoRequest(
+            expectedTitle,
+            expectedDescription,
+            expectedDuration,
+            expectedLaunchYear,
+            expectedOpened,
+            expectedPublished,
+            expectedRating.name,
+            expectedMembers,
+            expectedCategories,
+            expectedGenres
+        )
+        `when`(createVideoUseCase.execute(any()))
+            .thenReturn(CreateVideoOutput(expectedId.value))
+
+        // when
+        val aRequest = post("/videos")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(aCmd))
+        mvc.perform(aRequest)
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "/videos/" + expectedId.value))
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id", equalTo(expectedId.value)))
+
+        // then
+        verify(createVideoUseCase).execute(capture(createCaptor))
+        val actualCmd = createCaptor.value
+        Assertions.assertEquals(expectedTitle, actualCmd.title)
+        Assertions.assertEquals(expectedDescription, actualCmd.description)
+        Assertions.assertEquals(expectedLaunchYear, actualCmd.launchedAt)
+        Assertions.assertEquals(expectedDuration, actualCmd.duration)
+        Assertions.assertEquals(expectedOpened, actualCmd.opened)
+        Assertions.assertEquals(expectedPublished, actualCmd.published)
+        Assertions.assertEquals(expectedRating.name, actualCmd.rating)
+        Assertions.assertEquals(expectedCategories, actualCmd.categories)
+        Assertions.assertEquals(expectedGenres, actualCmd.genres)
+        Assertions.assertEquals(expectedMembers, actualCmd.members)
+        Assertions.assertNull(actualCmd.video)
+        Assertions.assertNull(actualCmd.trailer)
+        Assertions.assertNull(actualCmd.banner)
+        Assertions.assertNull(actualCmd.thumbnail)
+        Assertions.assertNull(actualCmd.thumbnailHalf)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnEmptyBody_whenCallsCreatePartial_shouldReturnError() {
+        // when
+        val aRequest = post("/videos")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnInvalidCommand_whenCallsCreatePartial_shouldReturnError() {
+        // given
+        val expectedErrorMessage = "title is required"
+        whenever(createVideoUseCase.execute(any()))
+            .thenThrow(DomainException.with(Error(expectedErrorMessage)))
+
+        // when
+        val aRequest = post("/videos")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                """
+                        {
+                          "title": "Olá Mundo!"
+                        }
+                        
+                        """.trimIndent()
+            )
         val response = mvc.perform(aRequest)
 
         // then

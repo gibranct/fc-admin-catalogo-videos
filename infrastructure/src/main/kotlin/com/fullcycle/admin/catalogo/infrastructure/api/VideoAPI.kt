@@ -82,7 +82,7 @@ interface VideoAPI {
             description = "A validation error was thrown"
         ), ApiResponse(responseCode = "500", description = "An internal server error was thrown")]
     )
-    fun createPartial(@RequestBody payload: CreateVideoRequest?): ResponseEntity<*>
+    fun createPartial(@RequestBody payload: CreateVideoRequest): ResponseEntity<*>
 
     @GetMapping(value = ["{id}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @Operation(summary = "Get a video by it's identifier")
