@@ -4,6 +4,8 @@ import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
+import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoCommand
+import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoUseCase
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
@@ -28,6 +30,7 @@ class VideoController(
     private val createVideoUseCase: CreateVideoUseCase,
     private val listVideosUseCase: ListVideosUseCase,
     private val getVideoByIdUseCase: GetVideoByIdUseCase,
+    private val updateVideoUseCase: UpdateVideoUseCase,
 ) : VideoAPI {
     override fun list(
         search: String?,
@@ -113,7 +116,25 @@ class VideoController(
     override fun getById(id: String): VideoResponse = VideoApiPresenter.present(getVideoByIdUseCase.execute(id))
 
     override fun update(id: String, payload: UpdateVideoRequest): ResponseEntity<*>? {
-        TODO("Not yet implemented")
+        val aCmd = UpdateVideoCommand.with(
+            id,
+            payload.title,
+            payload.description,
+            payload.yearLaunched,
+            payload.duration,
+            payload.opened,
+            payload.published,
+            payload.rating,
+            payload.categories,
+            payload.genres,
+            payload.castMembers,
+        )
+
+        val output = this.updateVideoUseCase.execute(aCmd)
+
+        return ResponseEntity.ok()
+            .location(URI.create("/videos/" + output.id))
+            .body(VideoApiPresenter.present(output))
     }
 
     override fun deleteById(id: String) {

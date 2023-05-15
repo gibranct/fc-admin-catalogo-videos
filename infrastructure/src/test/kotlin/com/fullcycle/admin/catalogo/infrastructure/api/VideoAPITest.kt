@@ -10,6 +10,9 @@ import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdU
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.VideoOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.VideoListOutput
+import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoCommand
+import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoOutput
+import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoUseCase
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
@@ -19,6 +22,7 @@ import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.video.*
 import com.fullcycle.admin.catalogo.infrastructure.video.models.CreateVideoRequest
+import com.fullcycle.admin.catalogo.infrastructure.video.models.UpdateVideoRequest
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.verify
@@ -58,11 +62,17 @@ class VideoAPITest {
     @MockBean
     private lateinit var getVideoByIdUseCase: GetVideoByIdUseCase
 
+    @MockBean
+    private lateinit var updateVideoUseCase: UpdateVideoUseCase
+
     @Captor
     private lateinit var captor: ArgumentCaptor<VideoSearchQuery>
 
     @Captor
     private lateinit var createCaptor: ArgumentCaptor<CreateVideoCommand>
+
+    @Captor
+    private lateinit var updateCaptor: ArgumentCaptor<UpdateVideoCommand>
 
     @Test
     fun givenValidParams_whenCallsListVideos_shouldReturnPagination() {
@@ -461,5 +471,120 @@ class VideoAPITest {
         response.andExpect(status().isNotFound())
             .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidCommand_whenCallsUpdateVideo_shouldReturnVideoId() {
+        // given
+        val wesley = Fixture.Companion.CastMembers.wesley()
+        val aulas = Fixture.Companion.Categories.aulas()
+        val tech = Fixture.Companion.Genres.tech()
+        val expectedId = VideoID.unique()
+        val expectedTitle = Fixture.title()
+        val expectedDescription = Fixture.Companion.Videos.description()
+        val expectedLaunchYear = Fixture.year()
+        val expectedDuration = Fixture.duration()
+        val expectedOpened = Fixture.bool()
+        val expectedPublished = Fixture.bool()
+        val expectedRating = Fixture.Companion.Videos.rating()
+        val expectedCategories = setOf(aulas.id.value)
+        val expectedGenres = setOf(tech.id.value)
+        val expectedMembers = setOf(wesley.id.value)
+        val aCmd = UpdateVideoRequest(
+            expectedTitle,
+            expectedDescription,
+            expectedDuration,
+            expectedLaunchYear,
+            expectedOpened,
+            expectedPublished,
+            expectedRating.name,
+            expectedMembers,
+            expectedCategories,
+            expectedGenres
+        )
+        whenever(updateVideoUseCase.execute(any()))
+            .thenReturn(UpdateVideoOutput(expectedId.value))
+
+        // when
+        val aRequest = put("/videos/{id}", expectedId.value)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(aCmd))
+        mvc.perform(aRequest)
+            .andExpect(status().isOk())
+            .andExpect(header().string("Location", "/videos/" + expectedId.value))
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.id", equalTo(expectedId.value)))
+
+        // then
+        verify(updateVideoUseCase).execute(capture(updateCaptor))
+        val actualCmd = updateCaptor.value
+        Assertions.assertEquals(expectedTitle, actualCmd.title)
+        Assertions.assertEquals(expectedDescription, actualCmd.description)
+        Assertions.assertEquals(expectedLaunchYear, actualCmd.launchedAt)
+        Assertions.assertEquals(expectedDuration, actualCmd.duration)
+        Assertions.assertEquals(expectedOpened, actualCmd.opened)
+        Assertions.assertEquals(expectedPublished, actualCmd.published)
+        Assertions.assertEquals(expectedRating.name, actualCmd.rating)
+        Assertions.assertEquals(expectedCategories, actualCmd.categories)
+        Assertions.assertEquals(expectedGenres, actualCmd.genres)
+        Assertions.assertEquals(expectedMembers, actualCmd.members)
+        Assertions.assertNull(actualCmd.video)
+        Assertions.assertNull(actualCmd.trailer)
+        Assertions.assertNull(actualCmd.banner)
+        Assertions.assertNull(actualCmd.thumbnail)
+        Assertions.assertNull(actualCmd.thumbnailHalf)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnInvalidCommand_whenCallsUpdateVideo_shouldReturnNotification() {
+        // given
+        val wesley = Fixture.Companion.CastMembers.wesley()
+        val aulas = Fixture.Companion.Categories.aulas()
+        val tech = Fixture.Companion.Genres.tech()
+        val expectedId = VideoID.unique()
+        val expectedErrorMessage = "'title' should not be empty"
+        val expectedErrorCount = 1
+        val expectedTitle = ""
+        val expectedDescription = Fixture.Companion.Videos.description()
+        val expectedLaunchYear = Fixture.year()
+        val expectedDuration = Fixture.duration()
+        val expectedOpened = Fixture.bool()
+        val expectedPublished = Fixture.bool()
+        val expectedRating = Fixture.Companion.Videos.rating()
+        val expectedCategories = setOf(aulas.id.value)
+        val expectedGenres = setOf(tech.id.value)
+        val expectedMembers = setOf(wesley.id.value)
+        val aCmd = UpdateVideoRequest(
+            expectedTitle,
+            expectedDescription,
+            expectedDuration,
+            expectedLaunchYear,
+            expectedOpened,
+            expectedPublished,
+            expectedRating.name,
+            expectedMembers,
+            expectedCategories,
+            expectedGenres
+        )
+        whenever(updateVideoUseCase.execute(any()))
+            .thenThrow(DomainException.with(Error(expectedErrorMessage)))
+
+        // when
+        val aRequest = put("/videos/{id}", expectedId.value)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(aCmd))
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+            .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
+            .andExpect(jsonPath("$.errors", hasSize<Int>(expectedErrorCount)))
+            .andExpect(jsonPath("$.errors[0].message", equalTo(expectedErrorMessage)))
+        verify(updateVideoUseCase).execute(any())
     }
 }
