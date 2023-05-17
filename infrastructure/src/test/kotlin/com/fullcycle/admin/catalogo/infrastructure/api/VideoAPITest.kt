@@ -10,6 +10,9 @@ import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaCommand
 import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaUseCase
 import com.fullcycle.admin.catalogo.application.video.media.get.MediaOutput
+import com.fullcycle.admin.catalogo.application.video.media.upload.UploadMediaCommand
+import com.fullcycle.admin.catalogo.application.video.media.upload.UploadMediaOutput
+import com.fullcycle.admin.catalogo.application.video.media.upload.UploadMediaUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.VideoOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
@@ -79,6 +82,9 @@ class VideoAPITest {
     @MockBean
     private lateinit var getMediaUseCase: GetMediaUseCase
 
+    @MockBean
+    private lateinit var uploadMediaUseCase: UploadMediaUseCase
+
     @Captor
     private lateinit var captor: ArgumentCaptor<VideoSearchQuery>
 
@@ -90,6 +96,9 @@ class VideoAPITest {
 
     @Captor
     private lateinit var getMediaCaptor: ArgumentCaptor<GetMediaCommand>
+
+    @Captor
+    private lateinit var uploadMediaCaptor: ArgumentCaptor<UploadMediaCommand>
 
     @Test
     fun givenValidParams_whenCallsListVideos_shouldReturnPagination() {
@@ -646,5 +655,74 @@ class VideoAPITest {
         val actualCmd = getMediaCaptor.value
         Assertions.assertEquals(expectedId.value, actualCmd.videoId)
         Assertions.assertEquals(expectedMediaType.name, actualCmd.mediaType)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidVideoIdAndFile_whenCallsUploadMedia_shouldStoreIt() {
+        // given
+        val expectedId = VideoID.unique()
+        val expectedType = VideoMediaType.VIDEO
+        val expectedResource = Fixture.Companion.Videos.resource(expectedType)
+        val expectedVideo = MockMultipartFile(
+            "media_file",
+            expectedResource.name,
+            expectedResource.contentType,
+            expectedResource.content
+        )
+        whenever(uploadMediaUseCase.execute(any())).thenReturn(UploadMediaOutput(expectedId.value, expectedType))
+
+        // when
+        val aRequest = multipart("/videos/${expectedId.value}/medias/${expectedType.name}")
+            .file(expectedVideo)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isCreated())
+            .andExpect(
+                header().string(
+                    LOCATION,
+                    "/videos/${expectedId.value}/medias/${expectedType.name}"
+                )
+            )
+            .andExpect(header().string(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.video_id", equalTo(expectedId.value)))
+            .andExpect(jsonPath("$.media_type", equalTo(expectedType.name)))
+
+        verify(this.uploadMediaUseCase).execute(capture(uploadMediaCaptor))
+        val actualCmd = uploadMediaCaptor.value
+        Assertions.assertEquals(expectedId.value, actualCmd.videoId)
+        Assertions.assertEquals(expectedResource.content, actualCmd.videoResource.resource.content)
+        Assertions.assertEquals(expectedResource.name, actualCmd.videoResource.resource.name)
+        Assertions.assertEquals(expectedResource.contentType, actualCmd.videoResource.resource.contentType)
+        Assertions.assertEquals(expectedType, actualCmd.videoResource.type)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAnInvalidMediaType_whenCallsUploadMedia_shouldReturnError() {
+        // given
+        val expectedId = VideoID.unique()
+        val expectedResource = Fixture.Companion.Videos.resource(VideoMediaType.VIDEO)
+        val expectedVideo = MockMultipartFile(
+            "media_file",
+            expectedResource.name,
+            expectedResource.contentType,
+            expectedResource.content,
+        )
+
+        // when
+        val aRequest = multipart("/videos/${expectedId.value}/medias/INVALID")
+            .file(expectedVideo)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isUnprocessableEntity())
+            .andExpect(header().string(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.message", equalTo("Invalid INVALID for VideoMediaType")))
     }
 }

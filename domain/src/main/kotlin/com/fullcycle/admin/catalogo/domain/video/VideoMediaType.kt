@@ -8,4 +8,8 @@ enum class VideoMediaType {
     THUMBNAIL,
     THUMBNAIL_HALF;
 
+    companion object {
+        private val map = VideoMediaType.values().associateBy { it.name }
+        operator fun get(value: String) = map[value]
+    }
 }

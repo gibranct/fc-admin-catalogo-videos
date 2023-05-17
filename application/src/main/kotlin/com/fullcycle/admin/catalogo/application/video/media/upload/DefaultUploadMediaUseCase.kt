@@ -26,7 +26,7 @@ class DefaultUploadMediaUseCase(
             THUMBNAIL_HALF -> aVideo.updateThumbnailHalfMedia(mediaResourceGateway.storeImage(anId, aResource))
         }
 
-        return UploadMediaOutput.with(videoGateway.update(aVideo), aResource.type)
+        return UploadMediaOutput.with(videoGateway.update(video), aResource.type)
     }
 
 

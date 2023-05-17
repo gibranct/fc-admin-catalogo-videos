@@ -1,19 +1,27 @@
 package com.fullcycle.admin.catalogo.infrastructure.api.controllers
 
+import arrow.core.*
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaCommand
 import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaUseCase
+import com.fullcycle.admin.catalogo.application.video.media.upload.UploadMediaCommand
+import com.fullcycle.admin.catalogo.application.video.media.upload.UploadMediaUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoUseCase
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberID
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
+import com.fullcycle.admin.catalogo.domain.exceptions.DomainException
+import com.fullcycle.admin.catalogo.domain.exceptions.NotificationException
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
 import com.fullcycle.admin.catalogo.domain.pagination.Pagination
 import com.fullcycle.admin.catalogo.domain.resource.Resource
+import com.fullcycle.admin.catalogo.domain.validation.Error
+import com.fullcycle.admin.catalogo.domain.video.VideoMediaType
+import com.fullcycle.admin.catalogo.domain.video.VideoResource
 import com.fullcycle.admin.catalogo.domain.video.VideoSearchQuery
 import com.fullcycle.admin.catalogo.infrastructure.api.VideoAPI
 import com.fullcycle.admin.catalogo.infrastructure.utils.HashingUtils
@@ -38,6 +46,7 @@ class VideoController(
     private val updateVideoUseCase: UpdateVideoUseCase,
     private val deleteVideoUseCase: DeleteVideoUseCase,
     private val getMediaUseCase: GetMediaUseCase,
+    private val uploadMediaUseCase: UploadMediaUseCase,
 ) : VideoAPI {
     override fun list(
         search: String?,
@@ -159,7 +168,16 @@ class VideoController(
     }
 
     override fun uploadMediaByType(id: String, type: String, media: MultipartFile): ResponseEntity<*> {
-        TODO("Not yet implemented")
+        val aType = VideoMediaType.get(type).some().orNull()
+            ?: throw DomainException.with(Error("Invalid $type for VideoMediaType"))
+
+        val aCmd = UploadMediaCommand.with(id, VideoResource.with(aType, resourceOf(media)!!))
+
+        val output = uploadMediaUseCase.execute(aCmd)
+
+        return ResponseEntity
+            .created(URI.create("/videos/$id/medias/$type"))
+            .body(VideoApiPresenter.present(output))
     }
 
     private fun resourceOf(part: MultipartFile?): Resource? {
