@@ -3,6 +3,8 @@ package com.fullcycle.admin.catalogo.infrastructure.api.controllers
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaCommand
+import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
 import com.fullcycle.admin.catalogo.application.video.update.UpdateVideoCommand
@@ -20,6 +22,8 @@ import com.fullcycle.admin.catalogo.infrastructure.video.models.UpdateVideoReque
 import com.fullcycle.admin.catalogo.infrastructure.video.models.VideoListResponse
 import com.fullcycle.admin.catalogo.infrastructure.video.models.VideoResponse
 import com.fullcycle.admin.catalogo.infrastructure.video.presenters.VideoApiPresenter
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -33,6 +37,7 @@ class VideoController(
     private val getVideoByIdUseCase: GetVideoByIdUseCase,
     private val updateVideoUseCase: UpdateVideoUseCase,
     private val deleteVideoUseCase: DeleteVideoUseCase,
+    private val getMediaUseCase: GetMediaUseCase,
 ) : VideoAPI {
     override fun list(
         search: String?,
@@ -144,7 +149,13 @@ class VideoController(
     }
 
     override fun getMediaByType(id: String, type: String): ResponseEntity<ByteArray> {
-        TODO("Not yet implemented")
+        val aMedia = this.getMediaUseCase.execute(GetMediaCommand.with(id, type))
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.valueOf(aMedia.contentType))
+            .contentLength(aMedia.content.size.toLong())
+            .header(HttpHeaders.CONTENT_DISPOSITION , "attachment; filename=${aMedia.name}")
+            .body(aMedia.content)
     }
 
     override fun uploadMediaByType(id: String, type: String, media: MultipartFile): ResponseEntity<*> {

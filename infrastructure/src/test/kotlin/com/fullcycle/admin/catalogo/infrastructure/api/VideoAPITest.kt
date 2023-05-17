@@ -7,6 +7,9 @@ import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoOutput
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoUseCase
 import com.fullcycle.admin.catalogo.application.video.delete.DeleteVideoUseCase
+import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaCommand
+import com.fullcycle.admin.catalogo.application.video.media.get.GetMediaUseCase
+import com.fullcycle.admin.catalogo.application.video.media.get.MediaOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.GetVideoByIdUseCase
 import com.fullcycle.admin.catalogo.application.video.retrieve.get.VideoOutput
 import com.fullcycle.admin.catalogo.application.video.retrieve.list.ListVideosUseCase
@@ -24,6 +27,7 @@ import com.fullcycle.admin.catalogo.domain.validation.Error
 import com.fullcycle.admin.catalogo.domain.video.*
 import com.fullcycle.admin.catalogo.infrastructure.video.models.CreateVideoRequest
 import com.fullcycle.admin.catalogo.infrastructure.video.models.UpdateVideoRequest
+import com.google.common.net.HttpHeaders.*
 import com.nhaarman.mockitokotlin2.*
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
@@ -40,6 +44,12 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import java.lang.String
+import kotlin.Any
+import kotlin.Exception
+import kotlin.Int
+import kotlin.Throws
+import kotlin.Unit
 
 
 @ControllerTest(controllers = [VideoAPI::class])
@@ -66,6 +76,9 @@ class VideoAPITest {
     @MockBean
     private lateinit var deleteVideoUseCase: DeleteVideoUseCase
 
+    @MockBean
+    private lateinit var getMediaUseCase: GetMediaUseCase
+
     @Captor
     private lateinit var captor: ArgumentCaptor<VideoSearchQuery>
 
@@ -74,6 +87,9 @@ class VideoAPITest {
 
     @Captor
     private lateinit var updateCaptor: ArgumentCaptor<UpdateVideoCommand>
+
+    @Captor
+    private lateinit var getMediaCaptor: ArgumentCaptor<GetMediaCommand>
 
     @Test
     fun givenValidParams_whenCallsListVideos_shouldReturnPagination() {
@@ -589,7 +605,6 @@ class VideoAPITest {
         verify(updateVideoUseCase).execute(any())
     }
 
-
     @Test
     @Throws(java.lang.Exception::class)
     fun givenAValidId_whenCallsDeleteById_shouldDeleteIt() {
@@ -604,5 +619,32 @@ class VideoAPITest {
         // then
         response.andExpect(status().isNoContent())
         verify(deleteVideoUseCase).execute(eq(expectedId.value))
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun givenAValidVideoIdAndFileType_whenCallsGetMediaById_shouldReturnContent() {
+        // given
+        val expectedId = VideoID.unique()
+        val expectedMediaType = VideoMediaType.VIDEO
+        val expectedResource = Fixture.Companion.Videos.resource(expectedMediaType)
+        val expectedMedia = MediaOutput(expectedResource.content, expectedResource.contentType, expectedResource.name)
+        whenever(getMediaUseCase.execute(any())).thenReturn(expectedMedia)
+
+        // when
+        val aRequest = get("/videos/${expectedId.value}/medias/${expectedMediaType.name}")
+        val response = mvc.perform(aRequest)
+
+        // then
+        response.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_TYPE, expectedMedia.contentType))
+            .andExpect(header().string(CONTENT_LENGTH, String.valueOf(expectedMedia.content.size)))
+            .andExpect(header().string(CONTENT_DISPOSITION, "attachment; filename=${expectedMedia.name}"))
+            .andExpect(content().bytes(expectedMedia.content))
+
+        verify(this.getMediaUseCase).execute(capture(getMediaCaptor))
+        val actualCmd = getMediaCaptor.value
+        Assertions.assertEquals(expectedId.value, actualCmd.videoId)
+        Assertions.assertEquals(expectedMediaType.name, actualCmd.mediaType)
     }
 }
