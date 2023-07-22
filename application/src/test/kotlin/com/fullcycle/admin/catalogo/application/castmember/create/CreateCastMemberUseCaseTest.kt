@@ -29,7 +29,7 @@ internal class CreateCastMemberUseCaseTest : UseCaseTest() {
     @Test
     fun givenAValidCommand_whenCallsCreateCastMember_shouldReturnIt() {
         // given
-        val expectedName = Fixture.name()!!
+        val expectedName = Fixture.name()
         val expectedType = Fixture.Companion.CastMembers.type()
         val aCommand = CreateCastMemberCommand.with(expectedName, expectedType)
         whenever(castMemberGateway.create(any())).thenAnswer {

@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.application.castmember.delete
 
+import com.fullcycle.admin.catalogo.application.Fixture
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberGateway
@@ -29,7 +30,7 @@ internal class DeleteCastMemberUseCaseTest : UseCaseTest() {
     @Test
     fun givenAValidId_whenCallsDeleteCastMember_shouldDeleteIt() {
         // given
-        val aMember = CastMember.newMember(Fixture.name()!!, Fixture.Companion.CastMembers.type())
+        val aMember = CastMember.newMember(Fixture.name(), Fixture.Companion.CastMembers.type())
         val expectedId = aMember.id
         doNothing()
             .`when`(castMemberGateway).deleteById(any())
@@ -58,7 +59,7 @@ internal class DeleteCastMemberUseCaseTest : UseCaseTest() {
     @Test
     fun givenAValidId_whenCallsDeleteCastMemberAndGatewayThrowsException_shouldReceiveException() {
         // given
-        val aMember = CastMember.newMember(Fixture.name()!!, Fixture.Companion.CastMembers.type())
+        val aMember = CastMember.newMember(Fixture.name(), Fixture.Companion.CastMembers.type())
         val expectedId = aMember.id
         doThrow(IllegalStateException("Gateway error")).`when`(castMemberGateway).deleteById(any())
 

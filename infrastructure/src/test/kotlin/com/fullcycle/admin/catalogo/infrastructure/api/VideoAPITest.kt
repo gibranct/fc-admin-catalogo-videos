@@ -47,12 +47,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import java.lang.String
 import kotlin.Any
 import kotlin.Exception
 import kotlin.Int
 import kotlin.Throws
-import kotlin.Unit
 
 
 @ControllerTest(controllers = [VideoAPI::class])
@@ -647,7 +645,7 @@ class VideoAPITest {
         // then
         response.andExpect(status().isOk())
             .andExpect(header().string(CONTENT_TYPE, expectedMedia.contentType))
-            .andExpect(header().string(CONTENT_LENGTH, String.valueOf(expectedMedia.content.size)))
+            .andExpect(header().string(CONTENT_LENGTH, expectedMedia.content.size.toString()))
             .andExpect(header().string(CONTENT_DISPOSITION, "attachment; filename=${expectedMedia.name}"))
             .andExpect(content().bytes(expectedMedia.content))
 

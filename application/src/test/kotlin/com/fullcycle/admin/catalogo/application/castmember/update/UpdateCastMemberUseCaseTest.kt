@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.application.castmember.update
 
 import arrow.core.getOrElse
+import com.fullcycle.admin.catalogo.application.Fixture
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberGateway
@@ -38,7 +39,7 @@ internal class UpdateCastMemberUseCaseTest : UseCaseTest() {
         // given
         val aMember = CastMember.newMember("vin diesel", CastMemberType.DIRECTOR)
         val expectedId = aMember.id
-        val expectedName = Fixture.name()!!
+        val expectedName = Fixture.name()
         val expectedType = CastMemberType.ACTOR
         val aCommand = UpdateCastMemberCommand.with(
             expectedId.value,
@@ -68,7 +69,7 @@ internal class UpdateCastMemberUseCaseTest : UseCaseTest() {
     fun givenAInvalidId_whenCallsUpdateCastMember_shouldThrowsNotFoundException() {
         // given
         val expectedId = CastMemberID.from("123")
-        val expectedName = Fixture.name()!!
+        val expectedName = Fixture.name()
         val expectedType = Fixture.Companion.CastMembers.type()
         val expectedErrorMessage = "CastMember with id 123 not found"
         val aCommand = UpdateCastMemberCommand.with(

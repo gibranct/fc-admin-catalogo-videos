@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.application.castmember.retrieve.list
 
+import com.fullcycle.admin.catalogo.application.Fixture
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberGateway
@@ -31,8 +32,8 @@ internal class ListCastMembersUseCaseTest : UseCaseTest() {
     fun givenAValidQuery_whenCallsListCastMembers_shouldReturnAll() {
         // given
         val members = listOf(
-            CastMember.newMember(Fixture.name()!!, Fixture.Companion.CastMembers.type()),
-            CastMember.newMember(Fixture.name()!!, Fixture.Companion.CastMembers.type())
+            CastMember.newMember(Fixture.name(), Fixture.Companion.CastMembers.type()),
+            CastMember.newMember(Fixture.name(), Fixture.Companion.CastMembers.type())
         )
         val expectedPage = 0
         val expectedPerPage = 10

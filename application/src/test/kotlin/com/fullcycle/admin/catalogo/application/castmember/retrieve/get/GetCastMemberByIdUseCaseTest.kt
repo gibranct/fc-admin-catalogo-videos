@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.application.castmember.retrieve.get
 
+import com.fullcycle.admin.catalogo.application.Fixture
 import com.fullcycle.admin.catalogo.application.UseCaseTest
 import com.fullcycle.admin.catalogo.domain.castmember.CastMember
 import com.fullcycle.admin.catalogo.domain.castmember.CastMemberGateway
@@ -32,7 +33,7 @@ internal class GetCastMemberByIdUseCaseTest : UseCaseTest() {
     @Test
     fun givenAValidId_whenCallsGetCastMember_shouldReturnIt() {
         // given
-        val expectedName = Fixture.name()!!
+        val expectedName = Fixture.name()
         val expectedType = Fixture.Companion.CastMembers.type()
         val aMember = CastMember.newMember(expectedName, expectedType)
         val expectedId = aMember.id
