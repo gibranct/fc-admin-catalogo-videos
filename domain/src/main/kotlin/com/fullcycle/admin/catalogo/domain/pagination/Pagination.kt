@@ -7,10 +7,7 @@ data class Pagination<T>(
     val items: List<T>,
 ) {
     fun <R> map(mapper: (T) -> R): Pagination<R> {
-        val aNewList = items
-            .stream()
-            .map(mapper)
-            .toList()
+        val aNewList = items.map(mapper)
 
         return Pagination(currentPage, perPage, total, aNewList)
     }

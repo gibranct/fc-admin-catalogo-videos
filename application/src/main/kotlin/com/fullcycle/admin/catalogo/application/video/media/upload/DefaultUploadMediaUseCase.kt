@@ -12,9 +12,9 @@ class DefaultUploadMediaUseCase(
     private val videoGateway: VideoGateway,
 ) : UploadMediaUseCase() {
 
-    override fun execute(aCmd: UploadMediaCommand): UploadMediaOutput {
-        val anId = VideoID.from(aCmd.videoId)
-        val aResource = aCmd.videoResource
+    override fun execute(anIn: UploadMediaCommand): UploadMediaOutput {
+        val anId = VideoID.from(anIn.videoId)
+        val aResource = anIn.videoResource
 
         val aVideo = videoGateway.findById(anId).toOption().getOrElse { throw notFound(anId) }
 

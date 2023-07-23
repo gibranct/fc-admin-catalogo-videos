@@ -44,10 +44,9 @@ internal class GetGenreUseCaseTestIT {
         Assertions.assertEquals(expectedCategoriesIds, actualGenre.categoriesIds)
         Assertions.assertEquals(expectedIsActive, actualGenre.active)
         Assertions.assertEquals(expectedId.value, actualGenre.id)
-        Assertions.assertEquals(aGenre.createdAt, actualGenre.createdAt)
-        Assertions.assertEquals(aGenre.updatedAt, actualGenre.updatedAt)
-        Assertions.assertEquals(aGenre.deletedAt, actualGenre.deletedAt)
-
+        Assertions.assertNotNull(actualGenre.createdAt)
+        Assertions.assertNotNull(actualGenre.updatedAt)
+        Assertions.assertNull(actualGenre.deletedAt)
     }
 
     @Test

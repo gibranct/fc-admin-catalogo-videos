@@ -1,7 +1,6 @@
 package com.fullcycle.admin.catalogo.application.video.media.get
 
 import arrow.core.getOrElse
-import arrow.core.rightIfNull
 import arrow.core.toOption
 import com.fullcycle.admin.catalogo.domain.exceptions.NotFoundException
 import com.fullcycle.admin.catalogo.domain.video.MediaResourceGateway
@@ -13,14 +12,14 @@ class DefaultGetMediaUseCase(
     private val mediaResourceGateway: MediaResourceGateway
 ) : GetMediaUseCase() {
 
-    override fun execute(aCmd: GetMediaCommand): MediaOutput {
-        val anId = VideoID.from(aCmd.videoId)
-        val aType = VideoMediaType.valueOf(aCmd.mediaType)
+    override fun execute(anIn: GetMediaCommand): MediaOutput {
+        val anId = VideoID.from(anIn.videoId)
+        val aType = VideoMediaType.valueOf(anIn.mediaType)
             .toOption()
-            .getOrElse { throw typeNotFound(aCmd.mediaType) }
+            .getOrElse { throw typeNotFound(anIn.mediaType) }
 
         val aResource = mediaResourceGateway.getResource(anId, aType)
-            .toOption().getOrElse { throw notFound(aCmd.videoId, aCmd.mediaType) }
+            .toOption().getOrElse { throw notFound(anIn.videoId, anIn.mediaType) }
 
         return MediaOutput.with(aResource)
     }

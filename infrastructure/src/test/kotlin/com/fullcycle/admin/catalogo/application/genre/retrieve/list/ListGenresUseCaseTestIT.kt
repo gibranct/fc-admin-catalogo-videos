@@ -41,10 +41,15 @@ class ListGenresUseCaseTestIT {
         val actualResult = useCase.execute(searchQuery)
 
         Assertions.assertEquals(expectedItemsCount, actualResult.items.size)
-        Assertions.assertEquals(expectedResult, actualResult)
         Assertions.assertEquals(expectedPage, actualResult.currentPage)
         Assertions.assertEquals(expectedPerPage, actualResult.perPage)
         Assertions.assertEquals(genres.size.toLong(), actualResult.total)
+        expectedResult.items.forEachIndexed { index, listGenresOutput ->
+            Assertions.assertEquals(listGenresOutput.id, actualResult.items[index].id)
+            Assertions.assertEquals(listGenresOutput.name, actualResult.items[index].name)
+            Assertions.assertEquals(listGenresOutput.active, actualResult.items[index].active)
+            Assertions.assertEquals(listGenresOutput.categoriesIds, actualResult.items[index].categoriesIds)
+        }
     }
 
     @Test

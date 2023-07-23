@@ -1,0 +1,34 @@
+name: CI Pipeline
+
+on:
+  push:
+  # Habilita o gatilho manual através da interface do Github Actions
+  workflow_dispatch:
+
+jobs:
+  # Job pra execução dos testes
+  tests:
+    name: Test Runner
+    runs-on: ubuntu-latest
+
+    # Configuração de passos do job
+    steps:
+      - name: Source code check out
+        uses: actions/checkout@v3
+
+      # Configurar JDK na máquina
+      - name: Set up JDK@17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: Print java version
+        run: java --version
+
+      - name: Build application
+        run: ./gradlew clean build -x test
+
+      - name: Run application tests
+        run: ./gradlew test
+
