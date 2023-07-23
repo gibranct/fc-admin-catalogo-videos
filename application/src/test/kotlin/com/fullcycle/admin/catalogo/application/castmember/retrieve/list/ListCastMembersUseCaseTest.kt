@@ -41,9 +41,7 @@ internal class ListCastMembersUseCaseTest : UseCaseTest() {
         val expectedSort = "createdAt"
         val expectedDirection = "asc"
         val expectedTotal = 2L
-        val expectedItems = members.stream()
-            .map(CastMemberListOutput::from)
-            .toList()
+        val expectedItems = members.map(CastMemberListOutput::from)
         val expectedPagination = Pagination(
             expectedPage,
             expectedPerPage,

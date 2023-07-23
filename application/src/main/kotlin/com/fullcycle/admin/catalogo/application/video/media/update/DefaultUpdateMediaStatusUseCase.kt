@@ -12,11 +12,11 @@ class DefaultUpdateMediaStatusUseCase(
     private val videoGateway: VideoGateway,
 ) : UpdateMediaStatusUseCase() {
 
-    override fun execute(aCmd: UpdateMediaStatusCommand) {
-        val anId = VideoID.from(aCmd.videoId)
-        val aResourceId = aCmd.resourceId
-        val folder = aCmd.folder
-        val filename = aCmd.filename
+    override fun execute(anIn: UpdateMediaStatusCommand) {
+        val anId = VideoID.from(anIn.videoId)
+        val aResourceId = anIn.resourceId
+        val folder = anIn.folder
+        val filename = anIn.filename
 
         val aVideo = videoGateway.findById(anId)
             .toOption()
@@ -25,9 +25,9 @@ class DefaultUpdateMediaStatusUseCase(
         val encodedPath = "$folder/$filename"
 
         if (matches(aResourceId, aVideo.video)) {
-            updateVideo(VIDEO, aCmd.status, aVideo, encodedPath)
+            updateVideo(VIDEO, anIn.status, aVideo, encodedPath)
         } else if (matches(aResourceId, aVideo.trailer.toOption().orNull())) {
-            updateVideo(TRAILER, aCmd.status, aVideo, encodedPath)
+            updateVideo(TRAILER, anIn.status, aVideo, encodedPath)
         }
     }
 

@@ -5,8 +5,6 @@ import com.fullcycle.admin.catalogo.infrastructure.services.StorageService
 import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
-import org.springframework.stereotype.Component
-import java.util.stream.*
 
 class GCStorageService(
     private val bucket: String,
@@ -36,11 +34,7 @@ class GCStorageService(
 
     override fun list(prefix: String): List<String> {
         val blobs = this.storage.list(bucket, Storage.BlobListOption.prefix(prefix))
-
-        return StreamSupport.stream(blobs.iterateAll().spliterator(), false)
-            .map(BlobInfo::getBlobId)
-            .map(BlobId::getName)
-            .toList()
+        return blobs.values.map(BlobInfo::getBlobId).map(BlobId::getName)
     }
 
     override fun deleteAll(ids: List<String>) {

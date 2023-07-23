@@ -19,26 +19,26 @@ class DefaultMediaResourceGateway(
 
 
     override fun storeAudioVideo(videoID: VideoID, resource: VideoResource): AudioVideoMedia {
-        val filepath = filePath(videoID, resource.type);
+        val filepath = filePath(videoID, resource.type)
         val aResource = resource.resource
-        store(filepath, aResource);
-        return AudioVideoMedia.with(aResource.checksum, aResource.name, filepath);
+        store(filepath, aResource)
+        return AudioVideoMedia.with(aResource.checksum, aResource.name, filepath)
     }
 
-    override fun storeImage(videoID: VideoID, videoResource: VideoResource): ImageMedia {
-        val filepath = filePath(videoID, videoResource.type);
-        val aResource = videoResource.resource
-        store(filepath, aResource);
-        return ImageMedia.with(aResource.checksum, aResource.name, filepath);
+    override fun storeImage(videoID: VideoID, resource: VideoResource): ImageMedia {
+        val filepath = filePath(videoID, resource.type)
+        val aResource = resource.resource
+        store(filepath, aResource)
+        return ImageMedia.with(aResource.checksum, aResource.name, filepath)
     }
 
     override fun getResource(anId: VideoID, type: VideoMediaType): Resource? {
-        return this.storageService.get(filePath(anId, type));
+        return this.storageService.get(filePath(anId, type))
     }
 
     override fun clearResources(videoID: VideoID) {
-        val ids = this.storageService.list(folder(videoID));
-        this.storageService.deleteAll(ids);
+        val ids = this.storageService.list(folder(videoID))
+        this.storageService.deleteAll(ids)
     }
 
     private fun filename(videoMediaType: VideoMediaType): String {

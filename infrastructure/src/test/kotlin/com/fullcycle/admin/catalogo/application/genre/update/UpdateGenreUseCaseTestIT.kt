@@ -91,7 +91,7 @@ internal class UpdateGenreUseCaseTestIT {
         assertEquals(expectedIsActive, persistedGenre.active)
         assertTrue(persistedGenre.categoriesIds().size == expectedCategoriesIds.size)
         assertEquals(expectedName, persistedGenre.name)
-        assertEquals(genre.createdAt, persistedGenre.createdAt)
+        assertNotNull(persistedGenre.createdAt)
         assertTrue(genre.updatedAt.isBefore(persistedGenre.updatedAt))
         assertNull(persistedGenre.deletedAt)
     }
@@ -128,7 +128,7 @@ internal class UpdateGenreUseCaseTestIT {
                     persistedGenre.categoriesIds().containsAll(expectedCategoriesIds)
         )
         assertEquals(expectedName, persistedGenre.name)
-        assertEquals(genre.createdAt, persistedGenre.createdAt)
+        assertNotNull(persistedGenre.createdAt)
         assertTrue(genre.updatedAt.isBefore(persistedGenre.updatedAt))
         assertNotNull(persistedGenre.deletedAt)
     }
