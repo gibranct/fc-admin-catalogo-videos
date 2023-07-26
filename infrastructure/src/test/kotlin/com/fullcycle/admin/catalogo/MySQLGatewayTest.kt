@@ -15,7 +15,8 @@ import java.lang.annotation.Inherited
 @DataJpaTest
 @ComponentScan(
     basePackages = ["com.fullcycle.admin.catalogo"], // TODO:
-    includeFilters = [ComponentScan.Filter(type = FilterType.REGEX, pattern = [".[MySQLGateway]"])]
+    useDefaultFilters = false,
+    includeFilters = [ComponentScan.Filter(type = FilterType.REGEX, pattern = [".*MySQLGateway"])]
 )
 @ExtendWith(MySQLCleanUpExtension::class)
 annotation class MySQLGatewayTest

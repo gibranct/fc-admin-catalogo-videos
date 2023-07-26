@@ -20,7 +20,7 @@ class StorageConfig {
     fun storageProperties() = StorageProperties()
 
     @Bean
-    @Profile(value = ["development", "production"])
+    @Profile(value = ["production"])
     fun gcStorageAPI(
         props: GoogleStorageProperties,
         storage: Storage

@@ -2,6 +2,7 @@ package com.fullcycle.admin.catalogo.infrastructure.api
 
 import arrow.core.Either
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.ControllerTest
 import com.fullcycle.admin.catalogo.application.category.create.CreateCategoryOutput
 import com.fullcycle.admin.catalogo.application.category.create.CreateCategoryUseCase
@@ -79,6 +80,7 @@ class CategoryAPITest {
             .thenReturn(Either.Right(CreateCategoryOutput.from("123")))
 
         val request = post("/categories")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -110,6 +112,7 @@ class CategoryAPITest {
             .thenReturn(Either.Left(Notification.create(Error(expectedMessage))))
 
         val request = post("/categories")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -142,6 +145,7 @@ class CategoryAPITest {
             .thenThrow(DomainException.with(Error(expectedMessage)))
 
         val request = post("/categories")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -176,6 +180,7 @@ class CategoryAPITest {
             .thenReturn(CategoryOutput.from(aCategory))
 
         val request = get("/categories/${expectedId}")
+            .with(ApiTest.CATEGORIES_JWT)
             .accept(MediaType.APPLICATION_JSON_VALUE)
 
         mockMvc.perform(request)
@@ -203,6 +208,7 @@ class CategoryAPITest {
             .thenThrow(NotFoundException.with(Category::class, expectedId))
 
         val request = get("/categories/${expectedId.value}")
+            .with(ApiTest.CATEGORIES_JWT)
 
         mockMvc.perform(request)
             .andDo(MockMvcResultHandlers.print())
@@ -228,6 +234,7 @@ class CategoryAPITest {
         val anInput = UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive)
 
         val request = put("/categories/${expectedId.value}")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -256,6 +263,7 @@ class CategoryAPITest {
         val anInput = UpdateCategoryRequest("any", "", true)
 
         val request = put("/categories/${expectedId}")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -277,6 +285,7 @@ class CategoryAPITest {
         val anInput = UpdateCategoryRequest("any", "", true)
 
         val request = put("/categories/${expectedId}")
+            .with(ApiTest.CATEGORIES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -294,6 +303,7 @@ class CategoryAPITest {
         doNothing().`when`(deleteCategoryUseCase).execute(any())
 
         val request = delete("/categories/${expectedId}")
+            .with(ApiTest.CATEGORIES_JWT)
             .accept(MediaType.APPLICATION_JSON_VALUE)
 
         mockMvc.perform(request)
@@ -327,6 +337,7 @@ class CategoryAPITest {
             ))
 
         val request = get("/categories")
+            .with(ApiTest.CATEGORIES_JWT)
             .queryParam("page", expectedPage.toString())
             .queryParam("perPage", expectedPerPage.toString())
             .queryParam("sort", expectedSort)

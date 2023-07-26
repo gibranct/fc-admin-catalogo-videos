@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.e2e.category
 
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.E2ETest
 import com.fullcycle.admin.catalogo.e2e.MockDsl
 import com.fullcycle.admin.catalogo.infrastructure.category.models.UpdateCategoryRequest
@@ -91,6 +92,7 @@ internal class CategoryE2ETest: MockDsl {
         val updateCategoryRequest = UpdateCategoryRequest(expectedName, expectedDescription, expectedIsActive)
 
         val request = put("/categories/${aCategoryId.value}")
+            .with(ApiTest.ADMIN_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(Json.writeValueAsString(updateCategoryRequest))
 
@@ -135,6 +137,7 @@ internal class CategoryE2ETest: MockDsl {
         Assertions.assertThat(1).isEqualTo(categoryRepository.count())
 
         val request = delete("/categories/${aCategoryId.value}")
+            .with(ApiTest.ADMIN_JWT)
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
