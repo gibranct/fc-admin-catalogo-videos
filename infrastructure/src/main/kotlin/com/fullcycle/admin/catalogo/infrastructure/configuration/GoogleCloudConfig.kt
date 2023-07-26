@@ -18,7 +18,7 @@ import java.util.*
 
 
 @Configuration
-@Profile(value =["development", "production"])
+@Profile(value =["production"])
 class GoogleCloudConfig {
 
     @Bean

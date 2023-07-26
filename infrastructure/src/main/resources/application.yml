@@ -13,8 +13,8 @@ amqp:
 
 google:
   cloud:
-    credentials: ${GOOGLE_CLOUD_CREDENTIALS}
-    project-id: ${GOOGLE_CLOUD_PROJECT}
+    credentials: ${GOOGLE_CLOUD_CREDENTIALS:secret}
+    project-id: ${GOOGLE_CLOUD_PROJECT:secret}
     storage:
       catalogo-videos:
         bucket: fc3_videos
@@ -45,6 +45,12 @@ server:
 
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${keycloak.host}/realms/${keycloak.realm}/protocol/openid-connect/certs
+          issuer-uri: ${keycloak.host}/realms/${keycloak.realm}
   datasource:
     url: jdbc:mysql://${mysql.url}/${mysql.schema}?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: ${mysql.username}

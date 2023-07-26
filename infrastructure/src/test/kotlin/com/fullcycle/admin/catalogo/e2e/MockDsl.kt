@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.e2e
 
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.domain.Identifier
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
 import com.fullcycle.admin.catalogo.domain.genre.GenreID
@@ -61,6 +62,7 @@ interface MockDsl {
     private fun given(url: String, body: Any): String? {
 
         val request = MockMvcRequestBuilders.post(url)
+            .with(ApiTest.ADMIN_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(Json.writeValueAsString(body))
 
@@ -73,6 +75,7 @@ interface MockDsl {
 
     private fun <T>retrieve(url: String, anId: Identifier, clazz: Class<T>): T {
         val request = MockMvcRequestBuilders.get(url + anId.value)
+            .with(ApiTest.ADMIN_JWT)
 
         val json = this.mvc().perform(request)
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -91,6 +94,7 @@ interface MockDsl {
         search: String
     ): ResultActions {
         val request = MockMvcRequestBuilders.get(url)
+            .with(ApiTest.ADMIN_JWT)
             .queryParam("page", page.toString())
             .queryParam("perPage", perPage.toString())
             .queryParam("sort", sort)

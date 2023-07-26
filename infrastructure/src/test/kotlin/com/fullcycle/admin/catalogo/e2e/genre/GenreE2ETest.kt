@@ -1,5 +1,6 @@
 package com.fullcycle.admin.catalogo.e2e.genre
 
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.E2ETest
 import com.fullcycle.admin.catalogo.domain.category.Category
 import com.fullcycle.admin.catalogo.domain.category.CategoryID
@@ -96,14 +97,15 @@ internal class GenreE2ETest: MockDsl {
 
         val genreResponse = retrieveGenre(genreId)
 
-        Assertions.assertEquals(genreResponse.id, genreId.value)
-        Assertions.assertEquals(genreResponse.name, "any")
-        Assertions.assertEquals(genreResponse.categories.size, 0)
-        Assertions.assertEquals(genreResponse.active, false)
+        Assertions.assertEquals(genreId.value, genreResponse.id)
+        Assertions.assertEquals("any", genreResponse.name)
+        Assertions.assertEquals( 0, genreResponse.categories.size)
+        Assertions.assertEquals(false, genreResponse.active)
 
         val updateCategoryRequest = UpdateGenreRequest(expectedName, expectedCategories, expectedIsActive)
 
         val request = MockMvcRequestBuilders.put("/genres/${genreId.value}")
+            .with(ApiTest.ADMIN_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(Json.writeValueAsString(updateCategoryRequest))
 
@@ -112,7 +114,7 @@ internal class GenreE2ETest: MockDsl {
         val newCategoryResponse = retrieveGenre(genreId)
 
         Assertions.assertEquals(newCategoryResponse.id, genreId.value)
-        Assertions.assertEquals(newCategoryResponse.name, expectedName)
+        Assertions.assertEquals(expectedName, newCategoryResponse.name)
         Assertions.assertTrue(
             newCategoryResponse.categories.size == expectedCategories.size &&
                     newCategoryResponse.categories.containsAll(expectedCategories)
@@ -150,6 +152,7 @@ internal class GenreE2ETest: MockDsl {
         Assertions.assertEquals(1, genreRepository.count())
 
         val request = MockMvcRequestBuilders.delete("/genres/${genreId.value}")
+            .with(ApiTest.ADMIN_JWT)
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)

@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.infrastructure.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.ControllerTest
 import com.fullcycle.admin.catalogo.Fixture
 import com.fullcycle.admin.catalogo.application.video.create.CreateVideoCommand
@@ -44,7 +45,6 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import kotlin.Any
@@ -118,6 +118,7 @@ class VideoAPITest {
 
         // when
         val aRequest = get("/videos")
+            .with(ApiTest.VIDEO_JWT)
             .queryParam("page", expectedPage.toString())
             .queryParam("perPage", expectedPerPage.toString())
             .queryParam("sort", expectedSort)
@@ -170,7 +171,8 @@ class VideoAPITest {
             .thenReturn(Pagination(expectedPage, expectedPerPage, expectedTotal.toLong(), expectedItems))
 
         // when
-        val aRequest: MockHttpServletRequestBuilder = get("/videos").accept(MediaType.APPLICATION_JSON)
+        val aRequest = get("/videos").accept(MediaType.APPLICATION_JSON)
+            .with(ApiTest.VIDEO_JWT)
         val response = mvc.perform(aRequest)
 
         // then
@@ -230,6 +232,7 @@ class VideoAPITest {
             .file(expectedBanner)
             .file(expectedThumb)
             .file(expectedThumbHalf)
+            .with(ApiTest.VIDEO_JWT)
             .param("title", expectedTitle)
             .param("description", expectedDescription)
             .param("year_launched", expectedLaunchYear.toString())
@@ -274,6 +277,7 @@ class VideoAPITest {
         // given
         // when
         val aRequest = multipart("/videos").accept(MediaType.APPLICATION_JSON).contentType(MediaType.MULTIPART_FORM_DATA)
+            .with(ApiTest.VIDEO_JWT)
 
         val response = mvc.perform(aRequest)
 
@@ -317,6 +321,7 @@ class VideoAPITest {
 
         // when
         val aRequest = post("/videos")
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(aCmd))
@@ -351,6 +356,7 @@ class VideoAPITest {
     fun givenAnEmptyBody_whenCallsCreatePartial_shouldReturnError() {
         // when
         val aRequest = post("/videos")
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
         val response = mvc.perform(aRequest)
@@ -369,6 +375,7 @@ class VideoAPITest {
 
         // when
         val aRequest = post("/videos")
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(
@@ -432,6 +439,7 @@ class VideoAPITest {
 
         // when
         val aRequest = get("/videos/{id}", expectedId)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
         val response = mvc.perform(aRequest)
 
@@ -488,6 +496,7 @@ class VideoAPITest {
 
         // when
         val aRequest = get("/videos/{id}", expectedId)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
         val response = mvc.perform(aRequest)
 
@@ -532,6 +541,7 @@ class VideoAPITest {
 
         // when
         val aRequest = put("/videos/{id}", expectedId.value)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(aCmd))
@@ -598,6 +608,7 @@ class VideoAPITest {
 
         // when
         val aRequest = put("/videos/{id}", expectedId.value)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(aCmd))
@@ -621,6 +632,7 @@ class VideoAPITest {
 
         // when
         val aRequest = delete("/videos/{id}", expectedId.value)
+            .with(ApiTest.VIDEO_JWT)
         val response = mvc.perform(aRequest)
 
         // then
@@ -640,6 +652,7 @@ class VideoAPITest {
 
         // when
         val aRequest = get("/videos/${expectedId.value}/medias/${expectedMediaType.name}")
+            .with(ApiTest.VIDEO_JWT)
         val response = mvc.perform(aRequest)
 
         // then
@@ -673,6 +686,7 @@ class VideoAPITest {
         // when
         val aRequest = multipart("/videos/${expectedId.value}/medias/${expectedType.name}")
             .file(expectedVideo)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.MULTIPART_FORM_DATA)
         val response = mvc.perform(aRequest)
@@ -714,6 +728,7 @@ class VideoAPITest {
         // when
         val aRequest = multipart("/videos/${expectedId.value}/medias/INVALID")
             .file(expectedVideo)
+            .with(ApiTest.VIDEO_JWT)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.MULTIPART_FORM_DATA)
         val response = mvc.perform(aRequest)

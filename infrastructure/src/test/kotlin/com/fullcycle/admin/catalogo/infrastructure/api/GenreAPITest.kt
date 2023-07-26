@@ -1,6 +1,7 @@
 package com.fullcycle.admin.catalogo.infrastructure.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fullcycle.admin.catalogo.ApiTest
 import com.fullcycle.admin.catalogo.ControllerTest
 import com.fullcycle.admin.catalogo.application.genre.create.CreateGenreOutput
 import com.fullcycle.admin.catalogo.application.genre.create.CreateGenreUseCase
@@ -82,6 +83,7 @@ class GenreAPITest {
             .thenReturn(CreateGenreOutput.from(expectedGenreId))
 
         val request = post("/genres")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -112,6 +114,7 @@ class GenreAPITest {
         Mockito.`when`(createGenreUseCase.execute(any())).thenThrow(NotificationException("Error", Notification.create(Error(expectedMessage))))
 
         val request = post("/genres")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -145,6 +148,7 @@ class GenreAPITest {
             .thenThrow(DomainException.with(Error(expectedMessage)))
 
         val request = post("/genres")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -179,6 +183,7 @@ class GenreAPITest {
             .thenReturn(GenreOutput.from(aGenre))
 
         val request = get("/genres/${expectedId}")
+            .with(ApiTest.GENRES_JWT)
             .accept(MediaType.APPLICATION_JSON_VALUE)
 
         mockMvc.perform(request)
@@ -206,6 +211,7 @@ class GenreAPITest {
             .thenThrow(NotFoundException.with(Genre::class, expectedId))
 
         val request = get("/genres/${expectedId.value}")
+            .with(ApiTest.GENRES_JWT)
 
         mockMvc.perform(request)
             .andDo(MockMvcResultHandlers.print())
@@ -230,6 +236,7 @@ class GenreAPITest {
         val anInput = UpdateGenreRequest (expectedName, expectedCategoriesIds, expectedIsActive)
 
         val request = put("/genres/${expectedId.value}")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -259,6 +266,7 @@ class GenreAPITest {
         val anInput = UpdateGenreRequest("any", expectedCategoriesIds, true)
 
         val request = put("/genres/${expectedId}")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -280,6 +288,7 @@ class GenreAPITest {
         val anInput = UpdateGenreRequest("any", expectedCategoriesIds, true)
 
         val request = put("/genres/${expectedId}")
+            .with(ApiTest.GENRES_JWT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(anInput))
 
@@ -297,6 +306,7 @@ class GenreAPITest {
         doNothing().`when`(deleteGenreUseCase).execute(any())
 
         val request = delete("/genres/${expectedId}")
+            .with(ApiTest.GENRES_JWT)
             .accept(MediaType.APPLICATION_JSON_VALUE)
 
         mockMvc.perform(request)
@@ -333,6 +343,7 @@ class GenreAPITest {
             ))
 
         val request = get("/genres")
+            .with(ApiTest.GENRES_JWT)
             .queryParam("page", expectedPage.toString())
             .queryParam("perPage", expectedPerPage.toString())
             .queryParam("sort", expectedSort)
