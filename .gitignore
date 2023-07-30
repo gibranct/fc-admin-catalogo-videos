@@ -41,3 +41,6 @@ out/
 .postgresql
 
 .env
+.env.local
+.filebeat
+.keycloak
